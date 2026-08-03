@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Evaluación FAMOSA</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+
+<main class="contenedor">
+
+  <section id="pantallaInicio" class="card">
+
+    <div class="logo">
+      <img src="img/logo-famosa-color.jpg" alt="Logo Famosa">
+    </div>
+
+<!-- ================= INICIO ================= -->
+<h1>Sistema de Evaluación FAMOSA</h1>
+
+    <label>Personal</label>
+    <select id="tipoPersonal">
+      <option value="">Seleccione</option>
+      <option value="FAMOSA">Personal FAMOSA</option>
+      <option value="TERCIARIO">Personal Terciario</option>
+    </select>
+
+    <label>Tipo de evaluación</label>
+    <select id="tipoEvaluacion">
+      <option value="">Seleccione</option>
+      <option value="TRIMESTRAL">Evaluación Trimestral</option>
+      <option value="ANUAL">Evaluación Anual</option>
+    </select>
+
+    <button onclick="continuar()">Continuar</button>
+
+  </section>
+
+
+<!-- ==================== TRIMESTRAL TERCIARIO ==================== -->
+<section id="trim_terciario" class="card oculto">
+  <h2>Trimestral - Terciario</h2>
+
+  <label>Evaluador</label>
+  <select id="evaluador_trim_terciario"></select>
+
+  <label>Cargo evaluador</label>
+  <input id="cargoEvaluador_trim_terciario" readonly>
+
+  <label>Evaluado</label>
+  <select id="evaluado_trim_terciario"></select>
+
+  <label>Cargo</label>
+  <input id="cargoEvaluado_trim_terciario" readonly>
+
+  <label>Área</label>
+  <input id="areaEvaluado_trim_terciario" readonly>
+
+  <label>Regional</label>
+  <input id="regionalEmp_trim_terciario" readonly>
+
+  <label>Empresa</label>
+  <select id="empresaSelect_trim_terciario">
+    <option value="">Seleccione empresa</option>
+    <option value="NAIT">NAIT</option>
+    <option value="CH">CH</option>
+    <option value="PEÑA">PEÑA</option>
+  </select>
+
+  <label>Inicio contrato</label>
+  <input type="date" id="inicio_trim_terciario">
+
+  <label>Fecha llenado</label>
+  <input type="date" id="fecha_trim_terciario">
+
+  <button onclick="continuar()">Continuar</button>
+  <button onclick="volverInicio()">Volver</button>
+</section>
+
+<!-- ==================== TRIMESTRAL FAMOSA ==================== -->
+<section id="trim_famosa" class="card oculto">
+  <h2>Trimestral - FAMOSA</h2>
+
+  <label>Evaluador</label>
+  <select id="evaluador_trim_famosa"></select>
+
+  <label>Cargo evaluador</label>
+  <input id="cargoEvaluador_trim_famosa" readonly>
+
+  <label>Evaluado</label>
+  <select id="evaluado_trim_famosa"></select>
+
+  <label>Cargo</label>
+  <input id="cargoEvaluado_trim_famosa" readonly>
+
+  <label>Área</label>
+  <input id="areaEvaluado_trim_famosa" readonly>
+
+  <label>Regional</label>
+  <input id="regionalEmp_trim_famosa" readonly>
+
+  <label>Inicio contrato</label>
+  <input type="date" id="inicio_trim_famosa">
+
+  <label>Fecha llenado</label>
+  <input type="date" id="fecha_trim_famosa">
+
+  <button onclick="continuar()">Continuar</button>
+  <button onclick="volverInicio()">Volver</button>
+</section>
+
+<!-- ==================== ANUAL FAMOSA ==================== -->
+<section id="anual_famosa" class="card oculto">
+  <h2>Anual - FAMOSA</h2>
+
+  <label>Evaluador</label>
+  <select id="evaluador_anual_famosa"></select>
+
+  <label>Cargo evaluador</label>
+  <input id="cargoEvaluador_anual_famosa" readonly>
+
+  <label>Evaluado</label>
+  <select id="evaluado_anual_famosa"></select>
+
+  <label>Cargo</label>
+  <input id="cargoEvaluado_anual_famosa" readonly>
+
+  <label>Área</label>
+  <input id="areaEvaluado_anual_famosa" readonly>
+
+  <label>Regional</label>
+  <input id="regionalEmp_anual_famosa" readonly>
+
+  <label>Gestión</label>
+  <select id="gestion_anual_famosa">
+    <option value="">Seleccione año</option>
+    <option value="2026">2026</option>
+    <option value="2027">2027</option>
+    <option value="2028">2028</option>
+  </select>
+
+ <label>Relación con el evaluado</label>
+  <select id="relacion_anual_famosa">
+    <option value="">Seleccione</option>
+    <option value="JEFE">Soy su Jefe directo</option>
+    <option value="COMPANERO">Soy su Compañero (par)</option>
+    <option value="CLIENTE_INTERNO">Soy su Cliente interno</option>
+  </select>
+
+  <label>Fecha llenado</label>
+  <input type="date" id="fecha_anual_famosa">
+
+  <button onclick="irAPagina3('anual_famosa')">Continuar</button>
+  <button onclick="volverInicio()">Volver</button>
+</section>
+<section id="pagina3_anual_famosa" class="card oculto">
+
+  <div class="logo">
+    <img src="img/logo-famosa-color.jpg" alt="Logo Famosa">
+  </div>
+
+  <h2>Evaluación de Desempeño Anual</h2>
+
+  <!-- ============ COMPETENCIAS (todos evalúan) ============ -->
+  <h3 class="bloque-titulo">1. Evaluación por Competencias</h3>
+  <div id="listaCompetencias_anual_famosa"><!-- JS inserta las tarjetas --></div>
+
+  <!-- ============ FUNCIONES (solo Jefe) ============ -->
+  <div id="bloqueFunciones_anual_famosa" class="oculto">
+    <h3 class="bloque-titulo">2. Evaluación por Funciones</h3>
+    <div id="listaFunciones_anual_famosa"><!-- JS inserta las tarjetas --></div>
+  </div>
+
+  <!-- ============ GLOBAL (solo Jefe) ============ -->
+  <div id="bloqueGlobal_anual_famosa" class="oculto">
+    <h3 class="bloque-titulo">3. Evaluación Global</h3>
+    <div id="listaGlobal_anual_famosa"><!-- JS inserta la tarjeta única --></div>
+  </div>
+
+  <label>Comentario</label>
+  <textarea id="comentario_anual_famosa" rows="4"></textarea>
+
+  <button onclick="enviarEvaluacion('anual_famosa')">Enviar evaluación</button>
+
+  <div id="resultadoEnvio_anual_famosa"></div>
+
+</section>
+<!-- ==================== ANUAL TERCIARIO ==================== -->
+<section id="anual_terciario" class="card oculto">
+  <h2>Anual - Terciario</h2>
+
+  <label>Evaluador</label>
+  <select id="evaluador_anual_terciario"></select>
+
+  <label>Cargo evaluador</label>
+  <input id="cargoEvaluador_anual_terciario" readonly>
+
+  <label>Evaluado</label>
+  <select id="evaluado_anual_terciario"></select>
+
+  <label>Cargo</label>
+  <input id="cargoEvaluado_anual_terciario" readonly>
+
+  <label>Área</label>
+  <input id="areaEvaluado_anual_terciario" readonly>
+
+  <label>Regional</label>
+  <input id="regionalEmp_anual_terciario" readonly>
+
+  <label>Empresa</label>
+  <select id="empresaSelect_anual_terciario">
+    <option value="">Seleccione empresa</option>
+    <option value="NAIT">NAIT</option>
+    <option value="CH">CH</option>
+    <option value="PEÑA">PEÑA</option>
+  </select>
+
+  <label>Gestión</label>
+  <select id="gestion_anual_terciario">
+    <option value="">Seleccione año</option>
+    <option value="2026">2026</option>
+    <option value="2027">2027</option>
+    <option value="2028">2028</option>
+  </select>
+
+  <label>Relación con el evaluado</label>
+  <select id="relacion_anual_terciario">
+    <option value="">Seleccione</option>
+    <option value="JEFE">Soy su Jefe directo</option>
+    <option value="COMPANERO">Soy su Compañero (par)</option>
+    <option value="CLIENTE_INTERNO">Soy su Cliente interno</option>
+  </select>
+
+  <label>Fecha llenado</label>
+  <input type="date" id="fecha_anual_terciario">
+
+ <button onclick="irAPagina3('anual_terciario')">Continuar</button>
+  <button onclick="volverInicio()">Volver</button>
+</section>
+<!-- ==================== PÁGINA 3 - ANUAL TERCIARIO ==================== -->
+<section id="pagina3_anual_terciario" class="card oculto">
+
+  <div class="logo">
+    <img src="img/logo-famosa-color.jpg" alt="Logo Famosa">
+  </div>
+
+  <h2>Evaluación de Desempeño Anual</h2>
+
+  <!-- ============ COMPETENCIAS (todos evalúan) ============ -->
+  <h3 class="bloque-titulo">1. Evaluación por Competencias</h3>
+  <div id="listaCompetencias_anual_terciario"><!-- JS inserta las tarjetas --></div>
+
+  <!-- ============ FUNCIONES (solo Jefe) ============ -->
+  <div id="bloqueFunciones_anual_terciario" class="oculto">
+    <h3 class="bloque-titulo">2. Evaluación por Funciones</h3>
+    <div id="listaFunciones_anual_terciario"><!-- JS inserta las tarjetas --></div>
+  </div>
+
+  <!-- ============ GLOBAL (solo Jefe) ============ -->
+  <div id="bloqueGlobal_anual_terciario" class="oculto">
+    <h3 class="bloque-titulo">3. Evaluación Global</h3>
+    <div id="listaGlobal_anual_terciario"><!-- JS inserta la tarjeta única --></div>
+  </div>
+
+  <label>Comentario</label>
+  <textarea id="comentario_anual_terciario" rows="4"></textarea>
+
+  <button onclick="enviarEvaluacion('anual_terciario')">Enviar evaluación</button>
+
+  <div id="resultadoEnvio_anual_terciario"></div>
+
+</section>
+
+    <!-- ==================== PÁGINA DE AGRADECIMIENTO ==================== -->
+    <section id="pagina_gracias" class="card oculto">
+      <div class="logo">
+        <img src="img/logo-famosa-color.jpg" alt="Logo Famosa">
+      </div>
+      <h2 style="text-align:center; margin-top:20px;">¡Gracias por tu evaluación!</h2>
+      <p style="text-align:center; color:#666; font-size:16px; margin-top:10px;">
+        Tu respuesta fue registrada correctamente. Agradecemos tu tiempo y tu compromiso con el desarrollo de tu equipo.
+      </p>
+    </section>
+
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
