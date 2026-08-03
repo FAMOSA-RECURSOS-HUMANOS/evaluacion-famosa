@@ -1,0 +1,184 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f2f4f7;
+  color: #222;
+}
+
+.contenedor {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.card {
+  width: 100%;
+  max-width: 850px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.logo {
+  display: block;
+  max-width: 180px;
+  margin: 0 auto 15px auto;
+}
+
+h1, h2, h3 {
+  text-align: center;
+  color: #b30000;
+}
+
+.subtitulo {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+select, input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 13px;
+  background: #b30000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #870000;
+}
+
+.btn-secundario {
+  background: #555;
+}
+
+.btn-secundario:hover {
+  background: #333;
+}
+
+.oculto {
+  display: none;
+}
+
+.item-evaluacion {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  background: #fafafa;
+}
+
+.item-evaluacion p {
+  margin: 6px 0;
+}
+
+.resultado {
+  margin-top: 25px;
+  padding: 15px;
+  background: #f6f6f6;
+  border-left: 5px solid #b30000;
+}
+.logo {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.logo img {
+  width: 220px;
+  height: auto;
+  display: block;
+}
+.pregunta-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: #fafafa;
+}
+
+.pregunta-card h4 {
+  margin: 0 0 4px 0;
+  color: #222;
+}
+
+.pregunta-card p.descripcion {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 15px 0;
+}
+
+.opciones-escala {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.opcion-escala {
+  flex: 1;
+  min-width: 90px;
+  text-align: center;
+  padding: 14px 8px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #fff;
+  transition: all 0.15s;
+}
+
+.opcion-escala:hover {
+  border-color: #b30000;
+}
+
+.opcion-escala.seleccionada {
+  background: #b30000;
+  border-color: #b30000;
+  color: #fff;
+}
+
+.opcion-escala .numero {
+  display: block;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.opcion-escala .etiqueta {
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.bloque-titulo {
+  color: #b30000;
+  border-bottom: 2px solid #b30000;
+  padding-bottom: 8px;
+  margin-top: 30px;
+}
