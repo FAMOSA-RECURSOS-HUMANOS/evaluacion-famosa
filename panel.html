@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel RRHH - SEDF FAMOSA</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<main class="contenedor">
+
+  <!-- ==================== PANTALLA DE LOGIN ==================== -->
+  <section id="pantallaLogin" class="card">
+    <div class="logo">
+      <img src="img/logo-famosa-color.jpg" alt="Logo Famosa">
+    </div>
+
+    <h1>Panel de Recursos Humanos</h1>
+    <p style="text-align:center; color:#666; margin-bottom:20px;">
+      Acceso exclusivo para personal autorizado de RRHH
+    </p>
+
+    <div id="g_id_onload"
+         data-client_id="999229105951-outc8a34ddr20skfqrkio7ol0dp9u45c.apps.googleusercontent.com"
+         data-callback="manejarLogin">
+    </div>
+
+    <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="rectangular"
+         data-logo_alignment="left"
+         style="display:flex; justify-content:center; margin-top:10px;">
+    </div>
+
+    <p id="mensajeError" style="text-align:center; color:#B30000; margin-top:15px;"></p>
+  </section>
+
+  <!-- ==================== PANTALLA DEL PANEL (tras login exitoso) ==================== -->
+  <section id="pantallaPanel" class="card oculto">
+    <div class="logo">
+      <img src="img/logo-famosa-color.jpg" alt="Logo Famosa">
+    </div>
+
+    <h1>Bienvenida, <span id="nombreUsuario"></span></h1>
+    <p style="text-align:center; color:#666;">Panel de Recursos Humanos - SEDF</p>
+
+    <div id="contenidoPanel" style="margin-top:30px;">
+      <p style="text-align:center;">Aquí construiremos el dashboard próximamente.</p>
+    </div>
+
+    <button onclick="cerrarSesion()" style="margin-top:20px;">Cerrar sesión</button>
+  </section>
+
+</main>
+
+<script src="js/panel.js"></script>
+</body>
+</html>
