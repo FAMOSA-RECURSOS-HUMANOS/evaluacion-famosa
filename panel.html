@@ -48,8 +48,33 @@
     <h1>Bienvenida, <span id="nombreUsuario"></span></h1>
     <p style="text-align:center; color:#666;">Panel de Recursos Humanos - SEDF</p>
 
-    <div id="contenidoPanel" style="margin-top:30px;">
-      <p style="text-align:center;">Aquí construiremos el dashboard próximamente.</p>
+<div id="contenidoPanel" style="margin-top:30px;">
+
+      <div id="resumenGeneral" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:30px;">
+        <div class="tarjeta-metrica">
+          <div class="metrica-numero" id="metricaTotal">-</div>
+          <div class="metrica-label">Total Personal</div>
+        </div>
+        <div class="tarjeta-metrica">
+          <div class="metrica-numero" id="metricaEvaluados" style="color:#2e7d32;">-</div>
+          <div class="metrica-label">Evaluados</div>
+        </div>
+        <div class="tarjeta-metrica">
+          <div class="metrica-numero" id="metricaPendientes" style="color:#B30000;">-</div>
+          <div class="metrica-label">Pendientes</div>
+        </div>
+        <div class="tarjeta-metrica">
+          <div class="metrica-numero" id="metricaPorcentaje" style="color:#FFA000;">-</div>
+          <div class="metrica-label">Avance General</div>
+        </div>
+      </div>
+
+      <h3 style="text-align:center; color:#B30000; margin-bottom:15px;">Avance por Área</h3>
+
+      <div id="tablaAreas">
+        <p style="text-align:center; color:#666;">Cargando datos...</p>
+      </div>
+
     </div>
 
     <button onclick="cerrarSesion()" style="margin-top:20px;">Cerrar sesión</button>
