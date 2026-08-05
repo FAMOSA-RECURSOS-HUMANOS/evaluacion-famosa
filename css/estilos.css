@@ -182,3 +182,54 @@ button:hover {
   padding-bottom: 8px;
   margin-top: 30px;
 }
+.tarjeta-metrica {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px 25px;
+  text-align: center;
+  min-width: 140px;
+}
+
+.metrica-numero {
+  font-size: 32px;
+  font-weight: bold;
+  color: #B30000;
+}
+
+.metrica-label {
+  font-size: 13px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.tabla-dashboard {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.tabla-dashboard th, .tabla-dashboard td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.tabla-dashboard th {
+  background: #B30000;
+  color: white;
+}
+
+.barra-progreso {
+  background: #eee;
+  border-radius: 8px;
+  height: 10px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.barra-progreso-relleno {
+  background: #2e7d32;
+  height: 100%;
+}
