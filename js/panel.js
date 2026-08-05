@@ -17,6 +17,7 @@ function manejarLogin(respuesta) {
       document.getElementById("pantallaLogin").classList.add("oculto");
       document.getElementById("pantallaPanel").classList.remove("oculto");
       document.getElementById("nombreUsuario").textContent = data.nombre || data.email;
+      cargarDashboard();  
     } else {
       document.getElementById("mensajeError").textContent =
         "Acceso no autorizado: " + (data.motivo || "correo no reconocido");
@@ -40,6 +41,68 @@ window.addEventListener("DOMContentLoaded", () => {
   if (tokenGuardado) {
     document.getElementById("pantallaLogin").classList.add("oculto");
     document.getElementById("pantallaPanel").classList.remove("oculto");
-    document.getElementById("nombreUsuario").textContent = nombreGuardado || "";
-  }
-});
+document.getElementById("nombreUsuario").textContent = nombreGuardado || "";
+      cargarDashboard();
+    }
+  });
+function cargarDashboard() {
+  const idToken = sessionStorage.getItem("rrhh_idToken");
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ tipo: "dashboard", idToken: idToken })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.ok) {
+      document.getElementById("tablaAreas").innerHTML =
+        "<p style='text-align:center; color:#B30000;'>Error: " + (data.error || "No se pudo cargar el dashboard") + "</p>";
+      return;
+    }
+
+    document.getElementById("metricaTotal").textContent = data.totalGeneral;
+    document.getElementById("metricaEvaluados").textContent = data.evaluadosGeneral;
+    document.getElementById("metricaPendientes").textContent = data.pendientesGeneral;
+    document.getElementById("metricaPorcentaje").textContent = data.porcentajeGeneral + "%";
+
+    let filas = "";
+    data.areas.forEach(a => {
+      filas += `
+        <tr>
+          <td>${a.area}</td>
+          <td>${a.total}</td>
+          <td>${a.evaluados}</td>
+          <td>${a.pendientes}</td>
+          <td style="width:150px;">
+            <div class="barra-progreso">
+              <div class="barra-progreso-relleno" style="width:${a.porcentaje}%;"></div>
+            </div>
+          </td>
+          <td>${a.porcentaje}%</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById("tablaAreas").innerHTML = `
+      <table class="tabla-dashboard">
+        <thead>
+          <tr>
+            <th>Área</th>
+            <th>Total</th>
+            <th>Evaluados</th>
+            <th>Pendientes</th>
+            <th>Progreso</th>
+            <th>%</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${filas}
+        </tbody>
+      </table>
+    `;
+  })
+  .catch(err => {
+    document.getElementById("tablaAreas").innerHTML =
+      "<p style='text-align:center; color:#B30000;'>Error al cargar: " + err.message + "</p>";
+  });
+}
