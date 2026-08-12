@@ -164,11 +164,16 @@ function renderizarListaPersonal() {
     return;
   }
 
-  let filas = "";
+let filas = "";
   filtrados.forEach(p => {
     const badge = p.evaluado
       ? '<span class="badge-evaluado">Evaluado</span>'
       : '<span class="badge-pendiente">Pendiente</span>';
+    const nombreEscapado = p.nombre.replace(/'/g, "\\'");
+    const cargoEscapado = (p.cargo || "").replace(/'/g, "\\'");
+    const botonPdf = p.evaluado
+      ? `<button class="btn-pdf" onclick="generarPDFPersona('${nombreEscapado}', '${cargoEscapado}', this)">Generar PDF</button>`
+      : `<button class="btn-pdf" disabled title="Aún no evaluado">Generar PDF</button>`;
     filas += `
       <tr>
         <td>${p.nombre}</td>
@@ -176,6 +181,7 @@ function renderizarListaPersonal() {
         <td>${p.area}</td>
         <td>${p.tipoPersonal}</td>
         <td>${badge}</td>
+        <td>${botonPdf}</td>
       </tr>
     `;
   });
@@ -183,16 +189,16 @@ function renderizarListaPersonal() {
   document.getElementById("listaPersonalContainer").innerHTML = `
     <p style="color:#666; font-size:13px; margin-bottom:8px;">${filtrados.length} de ${personalCompleto.length} personas</p>
     <table class="tabla-dashboard">
-      <thead>
+<thead>
         <tr>
           <th>Nombre</th>
           <th>Cargo</th>
           <th>Área</th>
           <th>Tipo</th>
           <th>Estado</th>
+          <th>PDF</th>
         </tr>
       </thead>
-      <tbody>
         ${filas}
       </tbody>
     </table>
