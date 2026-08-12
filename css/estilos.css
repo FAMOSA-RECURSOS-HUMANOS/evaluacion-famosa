@@ -257,3 +257,23 @@ button:hover {
   font-size: 12px;
   font-weight: bold;
 }
+.btn-pdf {
+  width: auto;
+  padding: 6px 14px;
+  margin-top: 0;
+  font-size: 13px;
+  background: #B30000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-pdf:hover:not(:disabled) {
+  background: #870000;
+}
+
+.btn-pdf:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
