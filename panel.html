@@ -71,8 +71,26 @@
 
       <h3 style="text-align:center; color:#B30000; margin-bottom:15px;">Avance por Área</h3>
 
-      <div id="tablaAreas">
+<div id="tablaAreas">
         <p style="text-align:center; color:#666;">Cargando datos...</p>
+      </div>
+
+      <h3 style="text-align:center; color:#B30000; margin-top:40px; margin-bottom:15px;">Lista de Personal</h3>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+        <input type="text" id="buscarPersonal" placeholder="Buscar por nombre..." style="flex:2; min-width:180px;">
+        <select id="filtroArea" style="flex:1; min-width:150px;">
+          <option value="">Todas las áreas</option>
+        </select>
+        <select id="filtroEstado" style="flex:1; min-width:150px;">
+          <option value="">Todos</option>
+          <option value="pendiente">Solo Pendientes</option>
+          <option value="evaluado">Solo Evaluados</option>
+        </select>
+      </div>
+
+      <div id="listaPersonalContainer">
+        <p style="text-align:center; color:#666;">Cargando personal...</p>
       </div>
 
     </div>
