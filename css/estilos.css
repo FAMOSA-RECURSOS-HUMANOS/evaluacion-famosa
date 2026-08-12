@@ -233,3 +233,27 @@ button:hover {
   background: #2e7d32;
   height: 100%;
 }
+#buscarPersonal, #filtroArea, #filtroEstado {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.badge-evaluado {
+  background: #2e7d32;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.badge-pendiente {
+  background: #B30000;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
