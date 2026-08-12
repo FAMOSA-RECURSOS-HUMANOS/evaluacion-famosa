@@ -208,7 +208,7 @@ function renderizarListaPersonal() {
   `;
 }
 
-// ==================== GENERAR PDF ====================
+// ==================== GENERAR PDF (descarga directa) ====================
 function generarPDFPersona(nombre, cargo, boton) {
   const idToken = sessionStorage.getItem("rrhh_idToken");
   const textoOriginal = boton.textContent;
@@ -221,11 +221,30 @@ function generarPDFPersona(nombre, cargo, boton) {
   })
   .then(res => res.json())
   .then(data => {
-    if (data.ok && data.pdfUrl) {
-      window.open(data.pdfUrl, "_blank");
-      boton.textContent = "Ver PDF";
-      boton.disabled = false;
-      boton.onclick = () => window.open(data.pdfUrl, "_blank");
+    if (data.ok && data.pdfBase64) {
+      // Convertir el base64 en un archivo descargable en el navegador
+      const byteCharacters = atob(data.pdfBase64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "application/pdf" });
+
+      const urlTemporal = URL.createObjectURL(blob);
+      const enlace = document.createElement("a");
+      enlace.href = urlTemporal;
+      enlace.download = data.filename || "Evaluacion.pdf";
+      document.body.appendChild(enlace);
+      enlace.click();
+      document.body.removeChild(enlace);
+      URL.revokeObjectURL(urlTemporal);
+
+      boton.textContent = "Descargado ✓";
+      setTimeout(() => {
+        boton.textContent = textoOriginal;
+        boton.disabled = false;
+      }, 2500);
     } else {
       alert("Error al generar el PDF: " + (data.error || "desconocido"));
       boton.textContent = textoOriginal;
