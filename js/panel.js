@@ -46,6 +46,7 @@ document.getElementById("nombreUsuario").textContent = nombreGuardado || "";
     }
   });
 function cargarDashboard() {
+  cargarListaPersonal(); 
   const idToken = sessionStorage.getItem("rrhh_idToken");
 
   fetch(API_URL, {
@@ -106,3 +107,98 @@ function cargarDashboard() {
       "<p style='text-align:center; color:#B30000;'>Error al cargar: " + err.message + "</p>";
   });
 }
+let personalCompleto = [];
+
+function cargarListaPersonal() {
+  const idToken = sessionStorage.getItem("rrhh_idToken");
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ tipo: "listaPersonal", idToken: idToken })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.ok) {
+      document.getElementById("listaPersonalContainer").innerHTML =
+        "<p style='text-align:center; color:#B30000;'>Error: " + (data.error || "No se pudo cargar la lista") + "</p>";
+      return;
+    }
+
+    personalCompleto = data.personal;
+
+    const areas = [...new Set(personalCompleto.map(p => p.area))].sort();
+    const selectArea = document.getElementById("filtroArea");
+    areas.forEach(area => {
+      const opt = document.createElement("option");
+      opt.value = area;
+      opt.textContent = area;
+      selectArea.appendChild(opt);
+    });
+
+    renderizarListaPersonal();
+  })
+  .catch(err => {
+    document.getElementById("listaPersonalContainer").innerHTML =
+      "<p style='text-align:center; color:#B30000;'>Error al cargar: " + err.message + "</p>";
+  });
+}
+
+function renderizarListaPersonal() {
+  const busqueda = document.getElementById("buscarPersonal").value.trim().toUpperCase();
+  const areaFiltro = document.getElementById("filtroArea").value;
+  const estadoFiltro = document.getElementById("filtroEstado").value;
+
+  let filtrados = personalCompleto.filter(p => {
+    const coincideBusqueda = !busqueda || p.nombre.toUpperCase().includes(busqueda);
+    const coincideArea = !areaFiltro || p.area === areaFiltro;
+    const coincideEstado =
+      !estadoFiltro ||
+      (estadoFiltro === "evaluado" && p.evaluado) ||
+      (estadoFiltro === "pendiente" && !p.evaluado);
+    return coincideBusqueda && coincideArea && coincideEstado;
+  });
+
+  if (filtrados.length === 0) {
+    document.getElementById("listaPersonalContainer").innerHTML =
+      "<p style='text-align:center; color:#666;'>No se encontraron resultados.</p>";
+    return;
+  }
+
+  let filas = "";
+  filtrados.forEach(p => {
+    const badge = p.evaluado
+      ? '<span class="badge-evaluado">Evaluado</span>'
+      : '<span class="badge-pendiente">Pendiente</span>';
+    filas += `
+      <tr>
+        <td>${p.nombre}</td>
+        <td>${p.cargo}</td>
+        <td>${p.area}</td>
+        <td>${p.tipoPersonal}</td>
+        <td>${badge}</td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("listaPersonalContainer").innerHTML = `
+    <p style="color:#666; font-size:13px; margin-bottom:8px;">${filtrados.length} de ${personalCompleto.length} personas</p>
+    <table class="tabla-dashboard">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Cargo</th>
+          <th>Área</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filas}
+      </tbody>
+    </table>
+  `;
+}
+
+document.getElementById("buscarPersonal").addEventListener("input", renderizarListaPersonal);
+document.getElementById("filtroArea").addEventListener("change", renderizarListaPersonal);
+document.getElementById("filtroEstado").addEventListener("change", renderizarListaPersonal);
