@@ -41,10 +41,11 @@ window.addEventListener("DOMContentLoaded", () => {
   if (tokenGuardado) {
     document.getElementById("pantallaLogin").classList.add("oculto");
     document.getElementById("pantallaPanel").classList.remove("oculto");
-document.getElementById("nombreUsuario").textContent = nombreGuardado || "";
-      cargarDashboard();
-    }
-  });
+    document.getElementById("nombreUsuario").textContent = nombreGuardado || "";
+    cargarDashboard();
+  }
+});
+
 function cargarDashboard() {
   cargarListaPersonal(); 
   const idToken = sessionStorage.getItem("rrhh_idToken");
@@ -107,6 +108,7 @@ function cargarDashboard() {
       "<p style='text-align:center; color:#B30000;'>Error al cargar: " + err.message + "</p>";
   });
 }
+
 let personalCompleto = [];
 
 function cargarListaPersonal() {
@@ -164,7 +166,7 @@ function renderizarListaPersonal() {
     return;
   }
 
-let filas = "";
+  let filas = "";
   filtrados.forEach(p => {
     const badge = p.evaluado
       ? '<span class="badge-evaluado">Evaluado</span>'
@@ -189,7 +191,7 @@ let filas = "";
   document.getElementById("listaPersonalContainer").innerHTML = `
     <p style="color:#666; font-size:13px; margin-bottom:8px;">${filtrados.length} de ${personalCompleto.length} personas</p>
     <table class="tabla-dashboard">
-<thead>
+      <thead>
         <tr>
           <th>Nombre</th>
           <th>Cargo</th>
@@ -199,10 +201,42 @@ let filas = "";
           <th>PDF</th>
         </tr>
       </thead>
+      <tbody>
         ${filas}
       </tbody>
     </table>
   `;
+}
+
+// ==================== GENERAR PDF ====================
+function generarPDFPersona(nombre, cargo, boton) {
+  const idToken = sessionStorage.getItem("rrhh_idToken");
+  const textoOriginal = boton.textContent;
+  boton.textContent = "Generando...";
+  boton.disabled = true;
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ tipo: "generarPDF", idToken: idToken, evaluado: nombre, cargoEvaluado: cargo })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.ok && data.pdfUrl) {
+      window.open(data.pdfUrl, "_blank");
+      boton.textContent = "Ver PDF";
+      boton.disabled = false;
+      boton.onclick = () => window.open(data.pdfUrl, "_blank");
+    } else {
+      alert("Error al generar el PDF: " + (data.error || "desconocido"));
+      boton.textContent = textoOriginal;
+      boton.disabled = false;
+    }
+  })
+  .catch(err => {
+    alert("Error de conexión: " + err.message);
+    boton.textContent = textoOriginal;
+    boton.disabled = false;
+  });
 }
 
 document.getElementById("buscarPersonal").addEventListener("input", renderizarListaPersonal);
