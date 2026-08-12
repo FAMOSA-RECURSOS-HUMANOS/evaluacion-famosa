@@ -202,7 +202,7 @@ function armarPagina3(sufijo) {
 
     const listaGlobal = document.getElementById(`listaGlobal_${sufijo}`);
     listaGlobal.innerHTML = crearTarjetaEscala(
-      "Valoración Integral",
+      "Calificación Integral de Desempeño",
       "Considera el desempeño integral del colaborador durante el periodo evaluado.",
       `global_${sufijo}`,
       ETIQUETAS_ESCALA
