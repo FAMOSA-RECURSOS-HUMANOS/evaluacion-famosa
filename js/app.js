@@ -246,10 +246,15 @@ function irAPagina3(sufijo) {
 // ========================
 // 10b. DETECCIÓN DE BAJO RENDIMIENTO (solo Jefe)
 // ========================
+// Rangos oficiales (sobre Calificación Integral 1-5, equivalente a % del 20% al 100%):
+//   20% - 59%  (1.0 - 2.9)  -> BAJO   -> activa Compromisos Siguiente Gestión
+//   60% - 79%  (3.0 - 3.9)  -> MEDIO  -> no activa
+//   80% - 100% (4.0 - 5.0)  -> ALTO   -> no activa
+// El corte es en 3.0 porque 3.0 / 5 = 60%, el límite exacto entre Bajo y Medio.
 function evaluarNivelDesempeno(sufijo) {
   const relacion = document.getElementById(`relacion_${sufijo}`).value;
   const bloqueCompromisos = document.getElementById(`bloqueCompromisos_${sufijo}`);
-  if (relacion !== "JEFE" || !bloqueCompromisos) return;
+  if (relacion !== "JEFE" || !bloqueCompromisos) return; // Solo aplica cuando evalúa el Jefe
 
   // Promedio de competencias que el jefe lleva calificadas hasta ahora
   const valoresComp = COMPETENCIAS
@@ -280,6 +285,7 @@ function evaluarNivelDesempeno(sufijo) {
 
   const compuestoPreliminar = (promComp * 0.30) + (promFunc * 0.50) + (valorGlobal * 0.20);
 
+  // Umbral: 3.0 sobre 5 = 60% -> por debajo de esto es "Bajo" y activa Compromisos
   if (compuestoPreliminar < 3.0) {
     bloqueCompromisos.classList.remove("oculto");
   } else {
