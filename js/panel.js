@@ -47,7 +47,8 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function cargarDashboard() {
-  cargarListaPersonal(); 
+  cargarListaPersonal();
+  cargarRanking();
   const idToken = sessionStorage.getItem("rrhh_idToken");
 
   fetch(API_URL, {
@@ -258,6 +259,66 @@ function generarPDFPersona(nombre, cargo, boton) {
     alert("Error de conexión: " + err.message);
     boton.textContent = textoOriginal;
     boton.disabled = false;
+  });
+}
+
+// ==================== TOP 10 COLABORADORES (RANKING GENERAL) ====================
+function cargarRanking() {
+  const idToken = sessionStorage.getItem("rrhh_idToken");
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ tipo: "ranking", idToken: idToken })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.ok) {
+      document.getElementById("rankingContainer").innerHTML =
+        "<p style='text-align:center; color:#B30000;'>Error: " + (data.error || "No se pudo cargar el ranking") + "</p>";
+      return;
+    }
+
+    if (data.ranking.length === 0) {
+      document.getElementById("rankingContainer").innerHTML =
+        "<p style='text-align:center; color:#666;'>Aún no hay evaluaciones completas para generar el ranking.</p>";
+      return;
+    }
+
+    const medallas = ["🥇", "🥈", "🥉"];
+    let filas = "";
+    data.ranking.forEach((p, index) => {
+      const posicion = medallas[index] || (index + 1) + "º";
+      filas += `
+        <tr>
+          <td style="font-size:18px; text-align:center;">${posicion}</td>
+          <td>${p.nombre}</td>
+          <td>${p.cargo}</td>
+          <td>${p.area}</td>
+          <td style="font-weight:bold; color:#B30000;">${p.calificacionIntegral} / 5</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById("rankingContainer").innerHTML = `
+      <table class="tabla-dashboard">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Cargo</th>
+            <th>Área</th>
+            <th>Calificación Integral</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${filas}
+        </tbody>
+      </table>
+    `;
+  })
+  .catch(err => {
+    document.getElementById("rankingContainer").innerHTML =
+      "<p style='text-align:center; color:#B30000;'>Error al cargar: " + err.message + "</p>";
   });
 }
 
