@@ -50,11 +50,26 @@
 
 <div id="contenidoPanel" style="margin-top:30px;">
 
-      <div id="resumenGeneral" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:30px;">
+      <!-- ============ FILA 1: Segmentación de la plantilla ============ -->
+      <h3 style="text-align:center; color:#B30000; margin-bottom:10px;">Plantilla General</h3>
+      <div id="resumenSegmentacion" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:15px;">
         <div class="tarjeta-metrica">
-          <div class="metrica-numero" id="metricaTotal">-</div>
+          <div class="metrica-numero" id="metricaTotalPersonal" style="color:#333;">-</div>
           <div class="metrica-label">Total Personal</div>
         </div>
+        <div class="tarjeta-metrica">
+          <div class="metrica-numero" id="metricaAplican" style="color:#1565C0;">-</div>
+          <div class="metrica-label">Aplican a Evaluación</div>
+        </div>
+        <div class="tarjeta-metrica">
+          <div class="metrica-numero" id="metricaNoAplican" style="color:#888;">-</div>
+          <div class="metrica-label">No Aplican</div>
+        </div>
+      </div>
+
+      <!-- ============ FILA 2: Avance sobre quienes SÍ aplican ============ -->
+      <h3 style="text-align:center; color:#B30000; margin-bottom:10px; margin-top:25px;">Avance de la Evaluación</h3>
+      <div id="resumenGeneral" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:30px;">
         <div class="tarjeta-metrica">
           <div class="metrica-numero" id="metricaEvaluados" style="color:#2e7d32;">-</div>
           <div class="metrica-label">Evaluados</div>
