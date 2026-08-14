@@ -62,7 +62,10 @@ function cargarDashboard() {
       return;
     }
 
-    document.getElementById("metricaTotal").textContent = data.totalGeneral;
+    document.getElementById("metricaTotalPersonal").textContent = data.totalPersonalGeneral;
+    document.getElementById("metricaAplican").textContent = data.aplicanEvaluacion;
+    document.getElementById("metricaNoAplican").textContent = data.noAplicanEvaluacion;
+
     document.getElementById("metricaEvaluados").textContent = data.evaluadosGeneral;
     document.getElementById("metricaPendientes").textContent = data.pendientesGeneral;
     document.getElementById("metricaPorcentaje").textContent = data.porcentajeGeneral + "%";
@@ -208,7 +211,7 @@ function renderizarListaPersonal() {
   `;
 }
 
-// ==================== GENERAR PDF (descarga directa) ====================
+// ==================== GENERAR PDF (descarga directa al navegador) ====================
 function generarPDFPersona(nombre, cargo, boton) {
   const idToken = sessionStorage.getItem("rrhh_idToken");
   const textoOriginal = boton.textContent;
@@ -222,7 +225,7 @@ function generarPDFPersona(nombre, cargo, boton) {
   .then(res => res.json())
   .then(data => {
     if (data.ok && data.pdfBase64) {
-      // Convertir el base64 en un archivo descargable en el navegador
+      // Convertir el base64 recibido en un archivo real y forzar la descarga
       const byteCharacters = atob(data.pdfBase64);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
