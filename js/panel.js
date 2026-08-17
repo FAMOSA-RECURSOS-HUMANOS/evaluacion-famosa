@@ -340,6 +340,8 @@ function renderizarListaTrimestral() {
 
   let filas = "";
   filtrados.forEach(p => {
+    const nombreEscapado = p.nombre.replace(/'/g, "\\'");
+    const botonPdf = `<button class="btn-pdf" onclick="generarPDFTrimestral('${nombreEscapado}', this)">Generar PDF</button>`;
     filas += `
       <tr>
         <td>${p.nombre}</td>
@@ -348,6 +350,7 @@ function renderizarListaTrimestral() {
         <td>${p.fechaLlenado || "-"}</td>
         <td>${p.promedioTotal !== null ? p.promedioTotal + "%" : "-"}</td>
         <td>${etiquetaRecomendacion(p.recomendacion)}</td>
+        <td>${botonPdf}</td>
       </tr>
     `;
   });
@@ -363,6 +366,7 @@ function renderizarListaTrimestral() {
           <th>Fecha</th>
           <th>Promedio</th>
           <th>Recomendación</th>
+          <th>PDF</th>
         </tr>
       </thead>
       <tbody>
@@ -370,6 +374,54 @@ function renderizarListaTrimestral() {
       </tbody>
     </table>
   `;
+}
+
+function generarPDFTrimestral(nombre, boton) {
+  const idToken = sessionStorage.getItem("rrhh_idToken");
+  const textoOriginal = boton.textContent;
+  boton.textContent = "Generando...";
+  boton.disabled = true;
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ tipo: "generarPDFTrimestral", idToken: idToken, evaluado: nombre })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.ok && data.pdfBase64) {
+      const byteCharacters = atob(data.pdfBase64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "application/pdf" });
+
+      const urlTemporal = URL.createObjectURL(blob);
+      const enlace = document.createElement("a");
+      enlace.href = urlTemporal;
+      enlace.download = data.filename || "Trimestral.pdf";
+      document.body.appendChild(enlace);
+      enlace.click();
+      document.body.removeChild(enlace);
+      URL.revokeObjectURL(urlTemporal);
+
+      boton.textContent = "Descargado ✓";
+      setTimeout(() => {
+        boton.textContent = textoOriginal;
+        boton.disabled = false;
+      }, 2500);
+    } else {
+      alert("Error al generar el PDF: " + (data.error || "desconocido"));
+      boton.textContent = textoOriginal;
+      boton.disabled = false;
+    }
+  })
+  .catch(err => {
+    alert("Error de conexión: " + err.message);
+    boton.textContent = textoOriginal;
+    boton.disabled = false;
+  });
 }
 
 document.getElementById("buscarTrimestral").addEventListener("input", renderizarListaTrimestral);
