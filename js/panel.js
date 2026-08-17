@@ -262,6 +262,119 @@ function generarPDFPersona(nombre, cargo, boton) {
   });
 }
 
+// ==================== SELECTOR DE VISTA: ANUAL / TRIMESTRAL ====================
+let trimestralCargado = false;
+
+function mostrarVista(tipo) {
+  const tabAnual = document.getElementById("tabAnual");
+  const tabTrimestral = document.getElementById("tabTrimestral");
+  const vistaAnual = document.getElementById("vistaAnual");
+  const vistaTrimestral = document.getElementById("vistaTrimestral");
+
+  if (tipo === "anual") {
+    vistaAnual.classList.remove("oculto");
+    vistaTrimestral.classList.add("oculto");
+    tabAnual.style.background = "#B30000";
+    tabTrimestral.style.background = "#888";
+  } else {
+    vistaAnual.classList.add("oculto");
+    vistaTrimestral.classList.remove("oculto");
+    tabAnual.style.background = "#888";
+    tabTrimestral.style.background = "#B30000";
+    if (!trimestralCargado) {
+      cargarListaTrimestral();
+      trimestralCargado = true;
+    }
+  }
+}
+
+// ==================== LISTA DE PERSONAL - TRIMESTRAL ====================
+let trimestralCompleto = [];
+
+function cargarListaTrimestral() {
+  const idToken = sessionStorage.getItem("rrhh_idToken");
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ tipo: "listaTrimestral", idToken: idToken })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.ok) {
+      document.getElementById("listaTrimestralContainer").innerHTML =
+        "<p style='text-align:center; color:#B30000;'>Error: " + (data.error || "No se pudo cargar la lista") + "</p>";
+      return;
+    }
+
+    trimestralCompleto = data.lista;
+    renderizarListaTrimestral();
+  })
+  .catch(err => {
+    document.getElementById("listaTrimestralContainer").innerHTML =
+      "<p style='text-align:center; color:#B30000;'>Error al cargar: " + err.message + "</p>";
+  });
+}
+
+function etiquetaRecomendacion(valor) {
+  if (valor === "SEGUIR") return '<span class="badge-evaluado">Seguir Contrato</span>';
+  if (valor === "RESCINDIR") return '<span class="badge-pendiente">Rescindir Contrato</span>';
+  if (valor === "CAPACITAR") return '<span style="background:#D4A017; color:white; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold;">Capacitar</span>';
+  return '<span style="color:#888;">Sin definir</span>';
+}
+
+function renderizarListaTrimestral() {
+  const busqueda = document.getElementById("buscarTrimestral").value.trim().toUpperCase();
+  const recFiltro = document.getElementById("filtroRecomendacion").value;
+
+  let filtrados = trimestralCompleto.filter(p => {
+    const coincideBusqueda = !busqueda || p.nombre.toUpperCase().includes(busqueda);
+    const coincideRec = !recFiltro || p.recomendacion === recFiltro;
+    return coincideBusqueda && coincideRec;
+  });
+
+  if (filtrados.length === 0) {
+    document.getElementById("listaTrimestralContainer").innerHTML =
+      "<p style='text-align:center; color:#666;'>No se encontraron evaluaciones trimestrales.</p>";
+    return;
+  }
+
+  let filas = "";
+  filtrados.forEach(p => {
+    filas += `
+      <tr>
+        <td>${p.nombre}</td>
+        <td>${p.cargo}</td>
+        <td>${p.area}</td>
+        <td>${p.fechaLlenado || "-"}</td>
+        <td>${p.promedioTotal !== null ? p.promedioTotal + "%" : "-"}</td>
+        <td>${etiquetaRecomendacion(p.recomendacion)}</td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("listaTrimestralContainer").innerHTML = `
+    <p style="color:#666; font-size:13px; margin-bottom:8px;">${filtrados.length} de ${trimestralCompleto.length} evaluaciones</p>
+    <table class="tabla-dashboard">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Cargo</th>
+          <th>Área</th>
+          <th>Fecha</th>
+          <th>Promedio</th>
+          <th>Recomendación</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filas}
+      </tbody>
+    </table>
+  `;
+}
+
+document.getElementById("buscarTrimestral").addEventListener("input", renderizarListaTrimestral);
+document.getElementById("filtroRecomendacion").addEventListener("change", renderizarListaTrimestral);
+
 // ==================== TOP 10 COLABORADORES (RANKING GENERAL) ====================
 function cargarRanking() {
   const idToken = sessionStorage.getItem("rrhh_idToken");
