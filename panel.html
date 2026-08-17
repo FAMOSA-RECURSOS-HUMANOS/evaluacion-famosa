@@ -50,6 +50,15 @@
 
 <div id="contenidoPanel" style="margin-top:30px;">
 
+      <!-- ============ SELECTOR DE TIPO DE EVALUACIÓN ============ -->
+      <div style="display:flex; justify-content:center; gap:10px; margin-bottom:25px;">
+        <button id="tabAnual" onclick="mostrarVista('anual')" style="width:auto; padding:10px 28px; margin-top:0;">Anual</button>
+        <button id="tabTrimestral" onclick="mostrarVista('trimestral')" style="width:auto; padding:10px 28px; margin-top:0; background:#888;">Trimestral</button>
+      </div>
+
+      <!-- ==================== VISTA ANUAL ==================== -->
+      <div id="vistaAnual">
+
       <!-- ============ FILA 1: Segmentación de la plantilla ============ -->
       <h3 style="text-align:center; color:#B30000; margin-bottom:10px;">Plantilla General</h3>
       <div id="resumenSegmentacion" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:15px;">
@@ -116,6 +125,34 @@
       <div id="listaPersonalContainer">
         <p style="text-align:center; color:#666;">Cargando personal...</p>
       </div>
+
+      </div>
+      <!-- ==================== FIN VISTA ANUAL ==================== -->
+
+      <!-- ==================== VISTA TRIMESTRAL ==================== -->
+      <div id="vistaTrimestral" class="oculto">
+
+        <h3 style="text-align:center; color:#B30000; margin-bottom:15px;">Evaluaciones Trimestrales (Periodo de Prueba)</h3>
+        <p style="text-align:center; color:#666; font-size:13px; margin-top:-10px; margin-bottom:20px;">
+          Personal evaluado durante su periodo de prueba o movimiento interno
+        </p>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+          <input type="text" id="buscarTrimestral" placeholder="Buscar por nombre..." style="flex:2; min-width:180px;">
+          <select id="filtroRecomendacion" style="flex:1; min-width:180px;">
+            <option value="">Todas las recomendaciones</option>
+            <option value="SEGUIR">Seguir Contrato</option>
+            <option value="RESCINDIR">Rescindir Contrato</option>
+            <option value="CAPACITAR">Capacitar</option>
+          </select>
+        </div>
+
+        <div id="listaTrimestralContainer">
+          <p style="text-align:center; color:#666;">Cargando evaluaciones trimestrales...</p>
+        </div>
+
+      </div>
+      <!-- ==================== FIN VISTA TRIMESTRAL ==================== -->
 
     </div>
 
