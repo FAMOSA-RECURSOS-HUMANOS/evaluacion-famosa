@@ -31,9 +31,20 @@ function llenarSelects() {
   const selects = document.querySelectorAll("select[id^='evaluador_'], select[id^='evaluado_']");
   selects.forEach(sel => {
     const esSelectorEvaluador = sel.id.startsWith("evaluador_");
+    const esFormularioTrimestral = sel.id.includes("trim_");
+
     const listaFiltrada = PERSONAL.filter(p => {
-      const valor = esSelectorEvaluador ? p["EVALUA"] : p["EVALUADO"];
-      return String(valor || "").trim().toUpperCase() === "SI";
+      if (esSelectorEvaluador) {
+        // El Evaluador siempre debe tener EVALUA = SI (aplica tanto a Anual como Trimestral)
+        return String(p["EVALUA"] || "").trim().toUpperCase() === "SI";
+      }
+      if (esFormularioTrimestral) {
+        // El Trimestral es para personal nuevo (periodo de prueba) o movimiento interno:
+        // NO se filtra por EVALUADO, aplica a cualquier persona activa.
+        return true;
+      }
+      // Selector "Evaluado" del Anual: solo quienes tienen EVALUADO = SI
+      return String(p["EVALUADO"] || "").trim().toUpperCase() === "SI";
     });
 
     sel.innerHTML = "<option value=''>Seleccione</option>";
