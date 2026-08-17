@@ -5,6 +5,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxwoFz1ZCIVLr3QoJPCd8jB
 let PERSONAL = [];
 let COMPETENCIAS = [];
 let FUNCIONES = [];
+let HABILIDADES = [];
 
 // ======================
 // 2. CARGA DE DATOS SHEETS
@@ -16,6 +17,7 @@ async function cargarPersonal() {
     PERSONAL = data.personal;
     COMPETENCIAS = data.competencias;
     FUNCIONES = data.funciones;
+    HABILIDADES = data.habilidades || [];
     llenarSelects();
   } catch (error) {
     console.error("Error cargando datos:", error);
@@ -290,6 +292,136 @@ function evaluarNivelDesempeno(sufijo) {
     bloqueCompromisos.classList.remove("oculto");
   } else {
     bloqueCompromisos.classList.add("oculto");
+  }
+}
+
+// ========================
+// 12. EVALUACIÓN TRIMESTRAL (periodo de prueba / movimiento interno)
+// ========================
+const ETIQUETAS_ESCALA_TRIMESTRAL = [
+  { valor: 0, texto: "No sabe nada" },
+  { valor: 25, texto: "Supervisión constante" },
+  { valor: 50, texto: "Trabaja solo, supervisión esporádica" },
+  { valor: 75, texto: "Trabaja solo y bien" },
+  { valor: 100, texto: "Trabaja solo y enseña" }
+];
+
+function irAPaginaTrimestral(sufijo) {
+  mostrar(`pagina3_${sufijo}`);
+  armarPaginaTrimestral(sufijo);
+}
+
+function armarPaginaTrimestral(sufijo) {
+  const cargoEvaluado = document.getElementById(`cargoEvaluado_${sufijo}`).value;
+
+  const funcionesDelCargo = FUNCIONES.filter(f => normalizar(f["CARGO"]) === normalizar(cargoEvaluado));
+  const listaFunc = document.getElementById(`listaFuncionesTrim_${sufijo}`);
+  listaFunc.innerHTML = "";
+  if (funcionesDelCargo.length === 0) {
+    listaFunc.innerHTML = `<p style="color:#b30000;">Aún no hay funciones cargadas para el cargo "${cargoEvaluado}". Avisa a RRHH.</p>`;
+  } else {
+    funcionesDelCargo.forEach((f, index) => {
+      listaFunc.innerHTML += crearTarjetaEscala(
+        `Función ${f["Nº"]}`,
+        f["FUNCION"],
+        `trimFunc_${sufijo}_${index}`,
+        ETIQUETAS_ESCALA_TRIMESTRAL
+      );
+    });
+  }
+
+  const habilidadesDelCargo = HABILIDADES.filter(h => normalizar(h["CARGO"]) === normalizar(cargoEvaluado));
+  const listaHab = document.getElementById(`listaHabilidadesTrim_${sufijo}`);
+  listaHab.innerHTML = "";
+  if (habilidadesDelCargo.length === 0) {
+    listaHab.innerHTML = `<p style="color:#b30000;">Aún no hay habilidades cargadas para el cargo "${cargoEvaluado}". Avisa a RRHH.</p>`;
+  } else {
+    habilidadesDelCargo.forEach((h, index) => {
+      listaHab.innerHTML += crearTarjetaEscala(
+        `Habilidad ${h["Nº"]}`,
+        h["HABILIDAD"],
+        `trimHab_${sufijo}_${index}`,
+        ETIQUETAS_ESCALA_TRIMESTRAL
+      );
+    });
+  }
+}
+
+function seleccionarRecomendacion(elemento, sufijo) {
+  const contenedor = document.getElementById(`opcionesRecomendacion_${sufijo}`);
+  contenedor.querySelectorAll(".opcion-escala").forEach(op => op.classList.remove("seleccionada"));
+  elemento.classList.add("seleccionada");
+  document.getElementById(`valorRecomendacion_${sufijo}`).value = elemento.dataset.valor;
+
+  const avisoCapacitacion = document.getElementById(`bloqueCapacitacion_${sufijo}`);
+  const labelObs = document.getElementById(`labelObservaciones_${sufijo}`);
+  if (elemento.dataset.valor === "CAPACITAR") {
+    avisoCapacitacion.classList.remove("oculto");
+    labelObs.textContent = "Observaciones (detalla el tipo de capacitación necesaria)";
+  } else {
+    avisoCapacitacion.classList.add("oculto");
+    labelObs.textContent = "Observaciones";
+  }
+}
+
+async function enviarEvaluacionTrimestral(sufijo) {
+  const evaluador = document.getElementById(`evaluador_${sufijo}`).value;
+  const evaluado = document.getElementById(`evaluado_${sufijo}`).value;
+  const cargoEvaluado = document.getElementById(`cargoEvaluado_${sufijo}`).value;
+  const area = document.getElementById(`areaEvaluado_${sufijo}`).value;
+  const fechaIngresoPuesto = document.getElementById(`inicio_${sufijo}`).value;
+  const fechaLlenado = document.getElementById(`fecha_${sufijo}`).value;
+
+  const cargoEvaluadoNorm = normalizar(cargoEvaluado);
+  const funcionesDelCargo = FUNCIONES.filter(f => normalizar(f["CARGO"]) === cargoEvaluadoNorm);
+  const habilidadesDelCargo = HABILIDADES.filter(h => normalizar(h["CARGO"]) === cargoEvaluadoNorm);
+
+  const funcionesRespuestas = funcionesDelCargo.map((f, index) => {
+    const val = document.getElementById(`valor_trimFunc_${sufijo}_${index}`).value;
+    return { nombre: f["FUNCION"], puntaje: val };
+  });
+  const habilidadesRespuestas = habilidadesDelCargo.map((h, index) => {
+    const val = document.getElementById(`valor_trimHab_${sufijo}_${index}`).value;
+    return { nombre: h["HABILIDAD"], puntaje: val };
+  });
+
+  if (funcionesRespuestas.some(r => r.puntaje === "") || habilidadesRespuestas.some(r => r.puntaje === "")) {
+    alert("Por favor califica todas las funciones y habilidades antes de enviar.");
+    return;
+  }
+
+  const recomendacion = document.getElementById(`valorRecomendacion_${sufijo}`).value;
+  if (!recomendacion) {
+    alert("Por favor selecciona una recomendación (Seguir Contrato, Rescindir Contrato o Capacitar).");
+    return;
+  }
+
+  const observaciones = document.getElementById(`observaciones_${sufijo}`).value.trim();
+
+  if (recomendacion === "CAPACITAR" && !observaciones) {
+    alert("Marcaste 'Capacitar' — por favor detalla en Observaciones el tipo de capacitación necesaria.");
+    return;
+  }
+
+  const resultadoDiv = document.getElementById(`resultadoEnvio_${sufijo}`);
+  resultadoDiv.innerHTML = "Enviando...";
+
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        tipo: "trimestral",
+        evaluador, evaluado, cargoEvaluado: cargoEvaluado, area, fechaIngresoPuesto, fechaLlenado,
+        funciones: funcionesRespuestas,
+        habilidades: habilidadesRespuestas,
+        recomendacion, observaciones
+      })
+    });
+
+    mostrar("pagina_gracias_trimestral");
+  } catch (error) {
+    console.error("Error al enviar la evaluación trimestral:", error);
+    resultadoDiv.innerHTML = "⚠️ Hubo un problema de conexión al enviar. Por favor intenta de nuevo o avisa a RRHH.";
   }
 }
 
