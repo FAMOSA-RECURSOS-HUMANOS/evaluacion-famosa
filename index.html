@@ -68,13 +68,13 @@
     <option value="PEÑA">PEÑA</option>
   </select>
 
-  <label>Inicio contrato</label>
+  <label>Fecha de Ingreso al Puesto de Trabajo</label>
   <input type="date" id="inicio_trim_terciario">
 
   <label>Fecha llenado</label>
   <input type="date" id="fecha_trim_terciario">
 
-  <button onclick="continuar()">Continuar</button>
+  <button onclick="irAPaginaTrimestral('trim_terciario')">Continuar</button>
   <button onclick="volverInicio()">Volver</button>
 </section>
 
@@ -100,13 +100,13 @@
   <label>Regional</label>
   <input id="regionalEmp_trim_famosa" readonly>
 
-  <label>Inicio contrato</label>
+  <label>Fecha de Ingreso al Puesto de Trabajo</label>
   <input type="date" id="inicio_trim_famosa">
 
   <label>Fecha llenado</label>
   <input type="date" id="fecha_trim_famosa">
 
-  <button onclick="continuar()">Continuar</button>
+  <button onclick="irAPaginaTrimestral('trim_famosa')">Continuar</button>
   <button onclick="volverInicio()">Volver</button>
 </section>
 
@@ -313,6 +313,96 @@
   <div id="resultadoEnvio_anual_terciario"></div>
 
 </section>
+
+    <!-- ==================== PÁGINA 3 - TRIMESTRAL TERCIARIO ==================== -->
+    <section id="pagina3_trim_terciario" class="card oculto">
+      <div class="logo">
+        <img src="img/logo-famosa-color.jpg" alt="Logo Famosa">
+      </div>
+      <h2>Evaluación por Cumplimiento de Periodo de Prueba</h2>
+      <p style="text-align:center; color:#666; font-size:14px; margin-top:-10px;">R-RH.03.00.01</p>
+
+      <h3 class="bloque-titulo">1. Funciones y/o Actividades</h3>
+      <div id="listaFuncionesTrim_trim_terciario"><!-- JS inserta las tarjetas --></div>
+
+      <h3 class="bloque-titulo">2. Habilidades / Destrezas</h3>
+      <div id="listaHabilidadesTrim_trim_terciario"><!-- JS inserta las tarjetas --></div>
+
+      <h3 class="bloque-titulo">3. Recomendación</h3>
+      <div class="opciones-escala" id="opcionesRecomendacion_trim_terciario">
+        <div class="opcion-escala" data-valor="SEGUIR" onclick="seleccionarRecomendacion(this, 'trim_terciario')">
+          <span class="etiqueta">Seguir Contrato</span>
+        </div>
+        <div class="opcion-escala" data-valor="RESCINDIR" onclick="seleccionarRecomendacion(this, 'trim_terciario')">
+          <span class="etiqueta">Rescindir Contrato</span>
+        </div>
+        <div class="opcion-escala" data-valor="CAPACITAR" onclick="seleccionarRecomendacion(this, 'trim_terciario')">
+          <span class="etiqueta">Capacitar</span>
+        </div>
+      </div>
+      <input type="hidden" id="valorRecomendacion_trim_terciario" value="">
+
+      <div id="bloqueCapacitacion_trim_terciario" class="oculto" style="margin-top:10px; padding:10px; background:#FFF9E6; border-left:4px solid #D4A017; border-radius:6px;">
+        <p style="margin:0; font-size:14px; color:#7a5c00;">📌 Marcaste "Capacitar" — detalla en Observaciones el tipo de capacitación necesaria.</p>
+      </div>
+
+      <label id="labelObservaciones_trim_terciario">Observaciones</label>
+      <textarea id="observaciones_trim_terciario" rows="4"></textarea>
+
+      <button onclick="enviarEvaluacionTrimestral('trim_terciario')">Enviar evaluación</button>
+      <div id="resultadoEnvio_trim_terciario"></div>
+    </section>
+
+    <!-- ==================== PÁGINA 3 - TRIMESTRAL FAMOSA ==================== -->
+    <section id="pagina3_trim_famosa" class="card oculto">
+      <div class="logo">
+        <img src="img/logo-famosa-color.jpg" alt="Logo Famosa">
+      </div>
+      <h2>Evaluación por Cumplimiento de Periodo de Prueba</h2>
+      <p style="text-align:center; color:#666; font-size:14px; margin-top:-10px;">R-RH.03.00.01</p>
+
+      <h3 class="bloque-titulo">1. Funciones y/o Actividades</h3>
+      <div id="listaFuncionesTrim_trim_famosa"><!-- JS inserta las tarjetas --></div>
+
+      <h3 class="bloque-titulo">2. Habilidades / Destrezas</h3>
+      <div id="listaHabilidadesTrim_trim_famosa"><!-- JS inserta las tarjetas --></div>
+
+      <h3 class="bloque-titulo">3. Recomendación</h3>
+      <div class="opciones-escala" id="opcionesRecomendacion_trim_famosa">
+        <div class="opcion-escala" data-valor="SEGUIR" onclick="seleccionarRecomendacion(this, 'trim_famosa')">
+          <span class="etiqueta">Seguir Contrato</span>
+        </div>
+        <div class="opcion-escala" data-valor="RESCINDIR" onclick="seleccionarRecomendacion(this, 'trim_famosa')">
+          <span class="etiqueta">Rescindir Contrato</span>
+        </div>
+        <div class="opcion-escala" data-valor="CAPACITAR" onclick="seleccionarRecomendacion(this, 'trim_famosa')">
+          <span class="etiqueta">Capacitar</span>
+        </div>
+      </div>
+      <input type="hidden" id="valorRecomendacion_trim_famosa" value="">
+
+      <div id="bloqueCapacitacion_trim_famosa" class="oculto" style="margin-top:10px; padding:10px; background:#FFF9E6; border-left:4px solid #D4A017; border-radius:6px;">
+        <p style="margin:0; font-size:14px; color:#7a5c00;">📌 Marcaste "Capacitar" — detalla en Observaciones el tipo de capacitación necesaria.</p>
+      </div>
+
+      <label id="labelObservaciones_trim_famosa">Observaciones</label>
+      <textarea id="observaciones_trim_famosa" rows="4"></textarea>
+
+      <button onclick="enviarEvaluacionTrimestral('trim_famosa')">Enviar evaluación</button>
+      <div id="resultadoEnvio_trim_famosa"></div>
+    </section>
+
+    <!-- ==================== PÁGINA DE AGRADECIMIENTO - TRIMESTRAL ==================== -->
+    <section id="pagina_gracias_trimestral" class="card oculto">
+      <div class="logo">
+        <img src="img/logo-famosa-color.jpg" alt="Logo Famosa">
+      </div>
+      <h2 style="text-align:center; margin-top:20px;">¡Gracias por llenar la evaluación!</h2>
+      <p style="text-align:center; color:#666; font-size:16px; margin-top:10px;">
+        Tu evaluación de periodo de prueba fue registrada correctamente. 
+        Recursos Humanos dará seguimiento a la recomendación indicada.
+      </p>
+    </section>
 
     <!-- ==================== PÁGINA DE AGRADECIMIENTO ==================== -->
     <section id="pagina_gracias" class="card oculto">
