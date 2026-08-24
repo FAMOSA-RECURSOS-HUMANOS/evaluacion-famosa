@@ -152,6 +152,22 @@ function cargarListaPersonal() {
   });
 }
 
+function detalleRoles(rolesRealizados) {
+  const lista = rolesRealizados || [];
+  const roles = [
+    { clave: "JEFE", etiqueta: "Jefe" },
+    { clave: "AUTOEVALUACION", etiqueta: "Auto" },
+    { clave: "COMPANERO", etiqueta: "Comp." },
+    { clave: "CLIENTE_INTERNO", etiqueta: "C.I." }
+  ];
+  return roles.map(r => {
+    const hecho = lista.indexOf(r.clave) > -1;
+    const color = hecho ? "#2e7d32" : "#B30000";
+    const icono = hecho ? "✓" : "✗";
+    return `<span style="color:${color};">${icono} ${r.etiqueta}</span>`;
+  }).join(" &nbsp;");
+}
+
 function renderizarListaPersonal() {
   const busqueda = document.getElementById("buscarPersonal").value.trim().toUpperCase();
   const areaFiltro = document.getElementById("filtroArea").value;
@@ -195,7 +211,10 @@ function renderizarListaPersonal() {
         <td>${p.cargo}</td>
         <td>${p.area}</td>
         <td>${p.tipoPersonal}</td>
-        <td>${badge}</td>
+        <td>
+          ${badge}
+          <div style="font-size:11px; margin-top:5px; line-height:1.6;">${detalleRoles(p.rolesRealizados)}</div>
+        </td>
         <td>${botonPdf}</td>
       </tr>
     `;
