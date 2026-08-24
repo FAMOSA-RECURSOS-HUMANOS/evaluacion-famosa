@@ -81,7 +81,11 @@
       <div id="resumenGeneral" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:30px;">
         <div class="tarjeta-metrica">
           <div class="metrica-numero" id="metricaEvaluados" style="color:#2e7d32;">-</div>
-          <div class="metrica-label">Evaluados</div>
+          <div class="metrica-label">Completos (4/4)</div>
+        </div>
+        <div class="tarjeta-metrica">
+          <div class="metrica-numero" id="metricaEnProceso" style="color:#D4A017;">-</div>
+          <div class="metrica-label">En Proceso</div>
         </div>
         <div class="tarjeta-metrica">
           <div class="metrica-numero" id="metricaPendientes" style="color:#B30000;">-</div>
@@ -118,7 +122,8 @@
         <select id="filtroEstado" style="flex:1; min-width:150px;">
           <option value="">Todos</option>
           <option value="pendiente">Solo Pendientes</option>
-          <option value="evaluado">Solo Evaluados</option>
+          <option value="proceso">Solo En Proceso</option>
+          <option value="evaluado">Solo Completos</option>
         </select>
       </div>
 
@@ -160,6 +165,7 @@
   </section>
 
 </main>
+
 <script src="js/panel.js"></script>
 </body>
 </html>
