@@ -68,6 +68,7 @@ function cargarDashboard() {
     document.getElementById("metricaNoAplican").textContent = data.noAplicanEvaluacion;
 
     document.getElementById("metricaEvaluados").textContent = data.evaluadosGeneral;
+    document.getElementById("metricaEnProceso").textContent = data.enProcesoGeneral;
     document.getElementById("metricaPendientes").textContent = data.pendientesGeneral;
     document.getElementById("metricaPorcentaje").textContent = data.porcentajeGeneral + "%";
 
@@ -78,6 +79,7 @@ function cargarDashboard() {
           <td>${a.area}</td>
           <td>${a.total}</td>
           <td>${a.evaluados}</td>
+          <td>${a.enProceso}</td>
           <td>${a.pendientes}</td>
           <td style="width:150px;">
             <div class="barra-progreso">
@@ -95,7 +97,8 @@ function cargarDashboard() {
           <tr>
             <th>Área</th>
             <th>Total</th>
-            <th>Evaluados</th>
+            <th>Completos</th>
+            <th>En Proceso</th>
             <th>Pendientes</th>
             <th>Progreso</th>
             <th>%</th>
@@ -159,8 +162,9 @@ function renderizarListaPersonal() {
     const coincideArea = !areaFiltro || p.area === areaFiltro;
     const coincideEstado =
       !estadoFiltro ||
-      (estadoFiltro === "evaluado" && p.evaluado) ||
-      (estadoFiltro === "pendiente" && !p.evaluado);
+      (estadoFiltro === "evaluado" && p.estadoEvaluacion === "Completo") ||
+      (estadoFiltro === "proceso" && p.estadoEvaluacion === "En Proceso") ||
+      (estadoFiltro === "pendiente" && p.estadoEvaluacion === "Pendiente");
     return coincideBusqueda && coincideArea && coincideEstado;
   });
 
@@ -172,14 +176,19 @@ function renderizarListaPersonal() {
 
   let filas = "";
   filtrados.forEach(p => {
-    const badge = p.evaluado
-      ? '<span class="badge-evaluado">Evaluado</span>'
-      : '<span class="badge-pendiente">Pendiente</span>';
+    let badge;
+    if (p.estadoEvaluacion === "Completo") {
+      badge = `<span class="badge-evaluado">Completo (${p.rolesCompletados}/${p.rolesEsperados})</span>`;
+    } else if (p.estadoEvaluacion === "En Proceso") {
+      badge = `<span style="background:#D4A017; color:white; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold;">En Proceso (${p.rolesCompletados}/${p.rolesEsperados})</span>`;
+    } else {
+      badge = `<span class="badge-pendiente">Pendiente (0/${p.rolesEsperados})</span>`;
+    }
     const nombreEscapado = p.nombre.replace(/'/g, "\\'");
     const cargoEscapado = (p.cargo || "").replace(/'/g, "\\'");
     const botonPdf = p.evaluado
       ? `<button class="btn-pdf" onclick="generarPDFPersona('${nombreEscapado}', '${cargoEscapado}', this)">Generar PDF</button>`
-      : `<button class="btn-pdf" disabled title="Aún no evaluado">Generar PDF</button>`;
+      : `<button class="btn-pdf" disabled title="Evaluación incompleta">Generar PDF</button>`;
     filas += `
       <tr>
         <td>${p.nombre}</td>
