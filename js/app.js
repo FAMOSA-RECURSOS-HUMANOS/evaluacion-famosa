@@ -456,6 +456,22 @@ async function enviarEvaluacion(sufijo) {
     return;
   }
 
+  // Comentario es obligatorio para todos los roles (Jefe, Compañero, Cliente Interno, Autoevaluación)
+  if (!comentario.trim()) {
+    alert("Por favor completa el Comentario antes de enviar.");
+    return;
+  }
+
+  // Fortalezas y Oportunidades son obligatorias solo para el Jefe
+  if (relacion === "JEFE") {
+    const fortalezasCampo = document.getElementById(`fortalezas_${sufijo}`).value.trim();
+    const oportunidadesCampo = document.getElementById(`oportunidades_${sufijo}`).value.trim();
+    if (!fortalezasCampo || !oportunidadesCampo) {
+      alert("Como Jefe directo, es obligatorio completar Fortalezas destacadas y Oportunidades de desarrollo antes de enviar.");
+      return;
+    }
+  }
+
   // Validación de campos de Compromisos si el bloque está visible (desempeño bajo)
   let areasMejora = "", accionPropuesta = "", fechaPlazo = "";
   if (relacion === "JEFE") {
