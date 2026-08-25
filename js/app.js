@@ -451,7 +451,9 @@ async function enviarEvaluacion(sufijo) {
     return { competencia: c["Competencias"], calificacion: val };
   });
 
-  if (respuestasCompetencias.some(r => !r.calificacion)) {
+  // "Delegación y empoderamiento" es opcional para todos (no siempre aplica según el cargo/relación)
+  const competenciasObligatorias = respuestasCompetencias.filter(r => !normalizar(r.competencia).includes("DELEGACI"));
+  if (competenciasObligatorias.some(r => !r.calificacion)) {
     alert("Por favor califica todas las competencias antes de enviar.");
     return;
   }
