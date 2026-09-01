@@ -5,6 +5,81 @@
   <title>Panel RRHH - SEDF FAMOSA</title>
   <link rel="stylesheet" href="css/estilos.css">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    /* ===== Estilos nuevos exclusivos del Panel de RRHH ===== */
+    .panel-header { position: relative; overflow: hidden; border-radius: 16px; }
+    .esquina-decorativa {
+      position: absolute; top: -70px; right: -70px; width: 240px; height: 240px;
+      background: linear-gradient(135deg, #B30000, #7A0000);
+      transform: rotate(45deg); z-index: 0; opacity: 0.95; pointer-events: none;
+    }
+    .fila-botones-nav { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin: 25px 0 30px; }
+    .boton-nav {
+      display: flex; align-items: center; gap: 12px; background: #fff; border: 2px solid #eee;
+      border-radius: 14px; padding: 14px 20px; cursor: pointer; min-width: 210px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: all 0.15s ease;
+    }
+    .boton-nav:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); transform: translateY(-2px); }
+    .boton-nav.activo { border-color: #B30000; background: #FFF5F5; }
+    .boton-nav .icono-nav {
+      width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center;
+      justify-content: center; font-size: 20px; background: #FFEAEA; flex-shrink: 0;
+    }
+    .boton-nav .texto-nav { text-align: left; }
+    .boton-nav .titulo-nav { font-weight: bold; color: #222; font-size: 15px; }
+    .boton-nav .subtitulo-nav { color: #888; font-size: 12.5px; }
+
+    .fila-tarjetas { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; margin-bottom: 25px; }
+    .tarjeta-plantilla {
+      display: flex; align-items: center; gap: 14px; background: #fff; border-radius: 14px;
+      padding: 18px 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); flex: 1; min-width: 180px; max-width: 260px;
+    }
+    .tarjeta-plantilla .icono-circular {
+      width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center;
+      justify-content: center; font-size: 20px; color: white; flex-shrink: 0;
+    }
+    .tarjeta-plantilla .valor-plantilla { font-size: 26px; font-weight: bold; color: #222; line-height: 1.1; }
+    .tarjeta-plantilla .etiqueta-plantilla { color: #777; font-size: 13px; }
+
+    .tarjeta-avance-circular {
+      background: #fff; border-radius: 14px; padding: 22px; text-align: center; flex: 1;
+      min-width: 130px; max-width: 220px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .tarjeta-avance-circular .icono-avance {
+      width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-size: 20px; color: white; margin: 0 auto 10px;
+    }
+    .tarjeta-avance-circular .numero-avance { font-size: 24px; font-weight: bold; color: #222; }
+    .tarjeta-avance-circular .etiqueta-avance { color: #888; font-size: 13px; margin-top: 2px; }
+
+    .barra-confianza {
+      display: flex; flex-wrap: wrap; background: linear-gradient(90deg, #B30000, #7A0000);
+      border-radius: 14px; margin-top: 35px; overflow: hidden;
+    }
+    .barra-confianza .item-confianza { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 12px; color: white; padding: 16px 20px; }
+    .barra-confianza .icono-confianza {
+      width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0;
+    }
+    .barra-confianza .titulo-confianza { font-weight: bold; font-size: 14px; }
+    .barra-confianza .subtitulo-confianza { font-size: 12px; opacity: 0.85; }
+
+    .seccion-panel { display: none; }
+    .seccion-panel.activa { display: block; }
+
+    .tabs-ranking { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .tab-ranking { flex: 1; min-width: 150px; background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 14px; cursor: pointer; text-align: center; }
+    .tab-ranking.activo { border-color: #B30000; background: #FFF5F5; }
+    .tab-ranking .titulo-tab { font-weight: bold; color: #222; font-size: 14px; }
+    .tab-ranking .subtitulo-tab { color: #888; font-size: 12px; }
+    .ranking-panel { display: none; }
+    .ranking-panel.activo { display: block; }
+
+    .avatar-circular {
+      width: 38px; height: 38px; border-radius: 50%; display: inline-flex; align-items: center;
+      justify-content: center; color: white; font-weight: bold; font-size: 13px; margin-right: 10px; flex-shrink: 0;
+    }
+  </style>
 </head>
 <body>
 
@@ -40,7 +115,8 @@
   </section>
 
   <!-- ==================== PANTALLA DEL PANEL (tras login exitoso) ==================== -->
-  <section id="pantallaPanel" class="card oculto">
+  <section id="pantallaPanel" class="card oculto panel-header">
+    <div class="esquina-decorativa"></div>
     <div class="logo">
       <img src="img/logo-famosa-color.jpg" alt="Logo Famosa">
     </div>
@@ -59,76 +135,182 @@
       <!-- ==================== VISTA ANUAL ==================== -->
       <div id="vistaAnual">
 
-      <!-- ============ FILA 1: Segmentación de la plantilla ============ -->
-      <h3 style="text-align:center; color:#B30000; margin-bottom:10px;">Plantilla General</h3>
-      <div id="resumenSegmentacion" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:15px;">
-        <div class="tarjeta-metrica">
-          <div class="metrica-numero" id="metricaTotalPersonal" style="color:#333;">-</div>
-          <div class="metrica-label">Total Personal</div>
+      <!-- ============ PORTADA: Plantilla General (siempre visible) ============ -->
+      <div class="fila-tarjetas">
+        <div class="tarjeta-plantilla">
+          <div class="icono-circular" style="background:#B30000;">👥</div>
+          <div>
+            <div class="valor-plantilla" id="metricaTotalPersonal">-</div>
+            <div class="etiqueta-plantilla">Total Personal</div>
+          </div>
         </div>
-        <div class="tarjeta-metrica">
-          <div class="metrica-numero" id="metricaAplican" style="color:#1565C0;">-</div>
-          <div class="metrica-label">Aplican a Evaluación</div>
+        <div class="tarjeta-plantilla">
+          <div class="icono-circular" style="background:#1565C0;">📋</div>
+          <div>
+            <div class="valor-plantilla" id="metricaAplican">-</div>
+            <div class="etiqueta-plantilla">Aplican a Evaluación</div>
+          </div>
         </div>
-        <div class="tarjeta-metrica">
-          <div class="metrica-numero" id="metricaNoAplican" style="color:#888;">-</div>
-          <div class="metrica-label">No Aplican</div>
-        </div>
-      </div>
-
-      <!-- ============ FILA 2: Avance sobre quienes SÍ aplican ============ -->
-      <h3 style="text-align:center; color:#B30000; margin-bottom:10px; margin-top:25px;">Avance de la Evaluación</h3>
-      <div id="resumenGeneral" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:30px;">
-        <div class="tarjeta-metrica">
-          <div class="metrica-numero" id="metricaEvaluados" style="color:#2e7d32;">-</div>
-          <div class="metrica-label">Completos (4/4)</div>
-        </div>
-        <div class="tarjeta-metrica">
-          <div class="metrica-numero" id="metricaEnProceso" style="color:#D4A017;">-</div>
-          <div class="metrica-label">En Proceso</div>
-        </div>
-        <div class="tarjeta-metrica">
-          <div class="metrica-numero" id="metricaPendientes" style="color:#B30000;">-</div>
-          <div class="metrica-label">Pendientes</div>
-        </div>
-        <div class="tarjeta-metrica">
-          <div class="metrica-numero" id="metricaPorcentaje" style="color:#FFA000;">-</div>
-          <div class="metrica-label">Avance General</div>
+        <div class="tarjeta-plantilla">
+          <div class="icono-circular" style="background:#888;">🚫</div>
+          <div>
+            <div class="valor-plantilla" id="metricaNoAplican">-</div>
+            <div class="etiqueta-plantilla">No Aplican</div>
+          </div>
         </div>
       </div>
 
-      <h3 style="text-align:center; color:#B30000; margin-bottom:15px;">Avance por Área</h3>
+      <!-- ============ BOTONES DE NAVEGACIÓN ============ -->
+      <div class="fila-botones-nav">
+        <div class="boton-nav activo" id="botonNav_avanceGeneral" onclick="mostrarSeccionAnual('avanceGeneral')">
+          <div class="icono-nav">📈</div>
+          <div class="texto-nav">
+            <div class="titulo-nav">Avance General</div>
+            <div class="subtitulo-nav">Ver resumen de avance</div>
+          </div>
+        </div>
+        <div class="boton-nav" id="botonNav_avancePorArea" onclick="mostrarSeccionAnual('avancePorArea')">
+          <div class="icono-nav">📊</div>
+          <div class="texto-nav">
+            <div class="titulo-nav">Avance por Área</div>
+            <div class="subtitulo-nav">Ver progreso por área</div>
+          </div>
+        </div>
+        <div class="boton-nav" id="botonNav_ranking" onclick="mostrarSeccionAnual('ranking')">
+          <div class="icono-nav">🏆</div>
+          <div class="texto-nav">
+            <div class="titulo-nav">Ranking</div>
+            <div class="subtitulo-nav">Ver rankings de desempeño</div>
+          </div>
+        </div>
+        <div class="boton-nav" id="botonNav_listaPersonal" onclick="mostrarSeccionAnual('listaPersonal')">
+          <div class="icono-nav">👤</div>
+          <div class="texto-nav">
+            <div class="titulo-nav">Lista Personal</div>
+            <div class="subtitulo-nav">Ver listado de colaboradores</div>
+          </div>
+        </div>
+      </div>
 
+      <!-- ============ SECCIÓN 1: Avance General ============ -->
+      <div id="seccionAvanceGeneral" class="seccion-panel activa">
+        <h3 style="text-align:center; color:#B30000; margin-bottom:15px;">Avance de la Evaluación</h3>
+        <div class="fila-tarjetas">
+          <div class="tarjeta-avance-circular">
+            <div class="icono-avance" style="background:#2e7d32;">✅</div>
+            <div class="numero-avance" id="metricaEvaluados">-</div>
+            <div class="etiqueta-avance">Completos (4/4)</div>
+          </div>
+          <div class="tarjeta-avance-circular">
+            <div class="icono-avance" style="background:#D4A017;">⏳</div>
+            <div class="numero-avance" id="metricaEnProceso">-</div>
+            <div class="etiqueta-avance">En Proceso</div>
+          </div>
+          <div class="tarjeta-avance-circular">
+            <div class="icono-avance" style="background:#B30000;">🕐</div>
+            <div class="numero-avance" id="metricaPendientes">-</div>
+            <div class="etiqueta-avance">Pendientes</div>
+          </div>
+          <div class="tarjeta-avance-circular">
+            <div class="icono-avance" style="background:#FFA000;">📈</div>
+            <div class="numero-avance" id="metricaPorcentaje">-</div>
+            <div class="etiqueta-avance">Avance General</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECCIÓN 2: Avance por Área ============ -->
+      <div id="seccionAvancePorArea" class="seccion-panel">
+        <h3 style="text-align:center; color:#B30000; margin-bottom:15px;">📊 Avance por Área</h3>
 <div id="tablaAreas">
-        <p style="text-align:center; color:#666;">Cargando datos...</p>
+          <p style="text-align:center; color:#666;">Cargando datos...</p>
+        </div>
       </div>
 
-      <h3 style="text-align:center; color:#B30000; margin-top:40px; margin-bottom:15px;">🏆 Top 10 Colaboradores</h3>
-      <p style="text-align:center; color:#666; font-size:13px; margin-top:-10px; margin-bottom:15px;">
-        Ranking general de toda la empresa, según Calificación Integral (Competencias 30% + Funciones 50% + Valoración Integral 20%)
-      </p>
+      <!-- ============ SECCIÓN 3: Ranking ============ -->
+      <div id="seccionRanking" class="seccion-panel">
+        <h3 style="text-align:center; color:#B30000; margin-bottom:5px;">🏆 Ranking de Evaluaciones</h3>
+        <p style="text-align:center; color:#666; font-size:13px; margin-bottom:20px;">
+          Ponderación: Competencias 30% + Funciones 50% + Valoración Integral 20%
+        </p>
 
-<div id="rankingContainer">
-        <p style="text-align:center; color:#666;">Cargando ranking...</p>
+        <div class="tabs-ranking">
+          <div class="tab-ranking activo" id="tabRanking_jefes" onclick="mostrarRankingTab('jefes')">
+            <div class="titulo-tab">👔 Ranking de Jefes</div>
+            <div class="subtitulo-tab">Solo Santa Cruz</div>
+          </div>
+          <div class="tab-ranking" id="tabRanking_general" onclick="mostrarRankingTab('general')">
+            <div class="titulo-tab">🏢 Ranking General</div>
+            <div class="subtitulo-tab">Santa Cruz, sin Jefes</div>
+          </div>
+          <div class="tab-ranking" id="tabRanking_sucursales" onclick="mostrarRankingTab('sucursales')">
+            <div class="titulo-tab">🏬 Ranking Sucursales</div>
+            <div class="subtitulo-tab">Fuera de Santa Cruz</div>
+          </div>
+        </div>
+
+        <div id="rankingPanel_jefes" class="ranking-panel activo">
+<div id="rankingJefesContainer">
+            <p style="text-align:center; color:#666;">Cargando ranking...</p>
+          </div>
+        </div>
+        <div id="rankingPanel_general" class="ranking-panel">
+<div id="rankingGeneralContainer">
+            <p style="text-align:center; color:#666;">Cargando ranking...</p>
+          </div>
+        </div>
+        <div id="rankingPanel_sucursales" class="ranking-panel">
+<div id="rankingSucursalesContainer">
+            <p style="text-align:center; color:#666;">Cargando ranking...</p>
+          </div>
+        </div>
       </div>
 
-      <h3 style="text-align:center; color:#B30000; margin-top:40px; margin-bottom:15px;">Lista de Personal</h3>
+      <!-- ============ SECCIÓN 4: Lista de Personal ============ -->
+      <div id="seccionListaPersonal" class="seccion-panel">
+        <h3 style="text-align:center; color:#B30000; margin-bottom:15px;">👥 Lista de Personal</h3>
 
-      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
-        <input type="text" id="buscarPersonal" placeholder="Buscar por nombre..." style="flex:2; min-width:180px;">
-        <select id="filtroArea" style="flex:1; min-width:150px;">
-          <option value="">Todas las áreas</option>
-        </select>
-        <select id="filtroEstado" style="flex:1; min-width:150px;">
-          <option value="">Todos</option>
-          <option value="pendiente">Solo Pendientes</option>
-          <option value="proceso">Solo En Proceso</option>
-          <option value="evaluado">Solo Completos</option>
-        </select>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+          <input type="text" id="buscarPersonal" placeholder="Buscar por nombre..." style="flex:2; min-width:180px;">
+          <select id="filtroArea" style="flex:1; min-width:150px;">
+            <option value="">Todas las áreas</option>
+          </select>
+          <select id="filtroEstado" style="flex:1; min-width:150px;">
+            <option value="">Todos</option>
+            <option value="pendiente">Solo Pendientes</option>
+            <option value="proceso">Solo En Proceso</option>
+            <option value="evaluado">Solo Completos</option>
+          </select>
+        </div>
+
+        <div id="listaPersonalContainer">
+          <p style="text-align:center; color:#666;">Cargando personal...</p>
+        </div>
       </div>
 
-      <div id="listaPersonalContainer">
-        <p style="text-align:center; color:#666;">Cargando personal...</p>
+      <!-- ============ BARRA DE CONFIANZA ============ -->
+      <div class="barra-confianza">
+        <div class="item-confianza">
+          <div class="icono-confianza">🛡️</div>
+          <div>
+            <div class="titulo-confianza">Confidencial y Seguro</div>
+            <div class="subtitulo-confianza">Tu información está protegida</div>
+          </div>
+        </div>
+        <div class="item-confianza">
+          <div class="icono-confianza">🔒</div>
+          <div>
+            <div class="titulo-confianza">Acceso Restringido</div>
+            <div class="subtitulo-confianza">Solo personal autorizado</div>
+          </div>
+        </div>
+        <div class="item-confianza">
+          <div class="icono-confianza">🎧</div>
+          <div>
+            <div class="titulo-confianza">Soporte RRHH</div>
+            <div class="subtitulo-confianza">Estamos para ayudarte</div>
+          </div>
+        </div>
       </div>
 
       </div>
