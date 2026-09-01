@@ -46,6 +46,42 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// ==================== NAVEGACIÓN POR BOTONES (Vista Anual) ====================
+function mostrarSeccionAnual(seccion) {
+  const secciones = ["avanceGeneral", "avancePorArea", "ranking", "listaPersonal"];
+  secciones.forEach(s => {
+    const el = document.getElementById(`seccion${s.charAt(0).toUpperCase() + s.slice(1)}`);
+    const boton = document.getElementById(`botonNav_${s}`);
+    if (s === seccion) {
+      el.classList.add("activa");
+      boton.classList.add("activo");
+    } else {
+      el.classList.remove("activa");
+      boton.classList.remove("activo");
+    }
+  });
+}
+
+function mostrarRankingTab(tipo) {
+  const tipos = ["jefes", "general", "sucursales"];
+  tipos.forEach(t => {
+    document.getElementById(`rankingPanel_${t}`).classList.toggle("activo", t === tipo);
+    document.getElementById(`tabRanking_${t}`).classList.toggle("activo", t === tipo);
+  });
+}
+
+// ==================== AVATAR CON INICIALES (Lista de Personal) ====================
+const COLORES_AVATAR = ["#B30000", "#1565C0", "#2e7d32", "#D4A017", "#6A1B9A", "#00838F", "#EF6C00"];
+
+function avatarIniciales(nombre) {
+  const partes = (nombre || "").trim().split(/\s+/);
+  const iniciales = ((partes[0] || "")[0] || "") + ((partes[1] || "")[0] || "");
+  let suma = 0;
+  for (let i = 0; i < nombre.length; i++) suma += nombre.charCodeAt(i);
+  const color = COLORES_AVATAR[suma % COLORES_AVATAR.length];
+  return `<span class="avatar-circular" style="background:${color};">${iniciales.toUpperCase()}</span>`;
+}
+
 function cargarDashboard() {
   cargarListaPersonal();
   cargarRanking();
@@ -207,7 +243,7 @@ function renderizarListaPersonal() {
       : `<button class="btn-pdf" disabled title="Evaluación incompleta">Generar PDF</button>`;
     filas += `
       <tr>
-        <td>${p.nombre}</td>
+        <td>${avatarIniciales(p.nombre)}${p.nombre}</td>
         <td>${p.cargo}</td>
         <td>${p.area}</td>
         <td>${p.tipoPersonal}</td>
@@ -456,6 +492,46 @@ document.getElementById("buscarTrimestral").addEventListener("input", renderizar
 document.getElementById("filtroRecomendacion").addEventListener("change", renderizarListaTrimestral);
 
 // ==================== TOP 10 COLABORADORES (RANKING GENERAL) ====================
+function pintarTablaRanking(contenedorId, lista, mensajeVacio) {
+  if (lista.length === 0) {
+    document.getElementById(contenedorId).innerHTML =
+      `<p style='text-align:center; color:#666;'>${mensajeVacio}</p>`;
+    return;
+  }
+
+  const medallas = ["🥇", "🥈", "🥉"];
+  let filas = "";
+  lista.forEach((p, index) => {
+    const posicion = medallas[index] || (index + 1) + "º";
+    filas += `
+      <tr>
+        <td style="font-size:18px; text-align:center;">${posicion}</td>
+        <td>${p.nombre}</td>
+        <td>${p.cargo}</td>
+        <td>${p.area}</td>
+        <td style="font-weight:bold; color:#B30000;">${p.calificacionIntegral} / 5</td>
+      </tr>
+    `;
+  });
+
+  document.getElementById(contenedorId).innerHTML = `
+    <table class="tabla-dashboard">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Cargo</th>
+          <th>Área</th>
+          <th>Calificación Integral</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filas}
+      </tbody>
+    </table>
+  `;
+}
+
 function cargarRanking() {
   const idToken = sessionStorage.getItem("rrhh_idToken");
 
@@ -466,52 +542,22 @@ function cargarRanking() {
   .then(res => res.json())
   .then(data => {
     if (!data.ok) {
-      document.getElementById("rankingContainer").innerHTML =
-        "<p style='text-align:center; color:#B30000;'>Error: " + (data.error || "No se pudo cargar el ranking") + "</p>";
+      const mensajeError = "<p style='text-align:center; color:#B30000;'>Error: " + (data.error || "No se pudo cargar el ranking") + "</p>";
+      document.getElementById("rankingJefesContainer").innerHTML = mensajeError;
+      document.getElementById("rankingGeneralContainer").innerHTML = mensajeError;
+      document.getElementById("rankingSucursalesContainer").innerHTML = mensajeError;
       return;
     }
 
-    if (data.ranking.length === 0) {
-      document.getElementById("rankingContainer").innerHTML =
-        "<p style='text-align:center; color:#666;'>Aún no hay evaluaciones completas para generar el ranking.</p>";
-      return;
-    }
-
-    const medallas = ["🥇", "🥈", "🥉"];
-    let filas = "";
-    data.ranking.forEach((p, index) => {
-      const posicion = medallas[index] || (index + 1) + "º";
-      filas += `
-        <tr>
-          <td style="font-size:18px; text-align:center;">${posicion}</td>
-          <td>${p.nombre}</td>
-          <td>${p.cargo}</td>
-          <td>${p.area}</td>
-          <td style="font-weight:bold; color:#B30000;">${p.calificacionIntegral} / 5</td>
-        </tr>
-      `;
-    });
-
-    document.getElementById("rankingContainer").innerHTML = `
-      <table class="tabla-dashboard">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nombre</th>
-            <th>Cargo</th>
-            <th>Área</th>
-            <th>Calificación Integral</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${filas}
-        </tbody>
-      </table>
-    `;
+    pintarTablaRanking("rankingJefesContainer", data.rankingJefes, "Aún no hay Jefes con evaluación completa.");
+    pintarTablaRanking("rankingGeneralContainer", data.rankingGeneral, "Aún no hay evaluaciones completas para generar este ranking.");
+    pintarTablaRanking("rankingSucursalesContainer", data.rankingSucursales, "Aún no hay evaluaciones completas en Sucursales.");
   })
   .catch(err => {
-    document.getElementById("rankingContainer").innerHTML =
-      "<p style='text-align:center; color:#B30000;'>Error al cargar: " + err.message + "</p>";
+    const mensajeError = "<p style='text-align:center; color:#B30000;'>Error al cargar: " + err.message + "</p>";
+    document.getElementById("rankingJefesContainer").innerHTML = mensajeError;
+    document.getElementById("rankingGeneralContainer").innerHTML = mensajeError;
+    document.getElementById("rankingSucursalesContainer").innerHTML = mensajeError;
   });
 }
 
