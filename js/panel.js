@@ -492,7 +492,8 @@ document.getElementById("buscarTrimestral").addEventListener("input", renderizar
 document.getElementById("filtroRecomendacion").addEventListener("change", renderizarListaTrimestral);
 
 // ==================== TOP 10 COLABORADORES (RANKING GENERAL) ====================
-function pintarTablaRanking(contenedorId, lista, mensajeVacio) {
+function pintarTablaRanking(contenedorId, lista, mensajeVacio, sinMedallas) {
+  lista = lista || [];
   if (lista.length === 0) {
     document.getElementById(contenedorId).innerHTML =
       `<p style='text-align:center; color:#666;'>${mensajeVacio}</p>`;
@@ -502,7 +503,7 @@ function pintarTablaRanking(contenedorId, lista, mensajeVacio) {
   const medallas = ["🥇", "🥈", "🥉"];
   let filas = "";
   lista.forEach((p, index) => {
-    const posicion = medallas[index] || (index + 1) + "º";
+    const posicion = sinMedallas ? (index + 1) + "º" : (medallas[index] || (index + 1) + "º");
     filas += `
       <tr>
         <td style="font-size:18px; text-align:center;">${posicion}</td>
@@ -532,6 +533,28 @@ function pintarTablaRanking(contenedorId, lista, mensajeVacio) {
   `;
 }
 
+// Datos del ranking y modo activo ("mejores" u "mejora")
+let datosRanking = null;
+let modoRanking = "mejores";
+
+function pintarRankingSegunModo() {
+  if (!datosRanking) return;
+  const esMejora = modoRanking === "mejora";
+  const sufijo = esMejora ? "Mejora" : "";
+  pintarTablaRanking("rankingJefesContainer", datosRanking["rankingJefes" + sufijo], "Aún no hay Jefes con evaluación completa.", esMejora);
+  pintarTablaRanking("rankingGeneralContainer", datosRanking["rankingGeneral" + sufijo], "Aún no hay evaluaciones completas para generar este ranking.", esMejora);
+  pintarTablaRanking("rankingSucursalesContainer", datosRanking["rankingSucursales" + sufijo], "Aún no hay evaluaciones completas en Sucursales.", esMejora);
+}
+
+function mostrarModoRanking(modo) {
+  modoRanking = modo;
+  document.getElementById("modoRanking_mejores").classList.toggle("activo", modo === "mejores");
+  document.getElementById("modoRanking_mejora").classList.toggle("activo", modo === "mejora");
+  document.getElementById("tituloRanking").textContent =
+    modo === "mejora" ? "📉 Oportunidades de Mejora (menores resultados)" : "🏆 Ranking de Evaluaciones";
+  pintarRankingSegunModo();
+}
+
 function cargarRanking() {
   const idToken = sessionStorage.getItem("rrhh_idToken");
 
@@ -549,9 +572,8 @@ function cargarRanking() {
       return;
     }
 
-    pintarTablaRanking("rankingJefesContainer", data.rankingJefes, "Aún no hay Jefes con evaluación completa.");
-    pintarTablaRanking("rankingGeneralContainer", data.rankingGeneral, "Aún no hay evaluaciones completas para generar este ranking.");
-    pintarTablaRanking("rankingSucursalesContainer", data.rankingSucursales, "Aún no hay evaluaciones completas en Sucursales.");
+    datosRanking = data;
+    pintarRankingSegunModo();
   })
   .catch(err => {
     const mensajeError = "<p style='text-align:center; color:#B30000;'>Error al cargar: " + err.message + "</p>";
