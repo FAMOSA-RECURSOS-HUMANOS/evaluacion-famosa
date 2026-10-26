@@ -504,16 +504,25 @@ function pintarTablaRanking(contenedorId, lista, mensajeVacio, sinMedallas) {
   let filas = "";
   lista.forEach((p, index) => {
     const posicion = sinMedallas ? (index + 1) + "º" : (medallas[index] || (index + 1) + "º");
+    // En Oportunidades de Mejora: rojo = Bajo Desempeño (<3.0), amarillo = Desempeño Adecuado (3.0 a 3.9)
+    const esBajo = p.calificacionIntegral < 3.0;
+    const colorNota = sinMedallas ? (esBajo ? "#B30000" : "#B07A00") : "#B30000";
+    const fondoFila = sinMedallas ? (esBajo ? "background:#FDECEC;" : "background:#FFF8DC;") : "";
+    const celdaNivel = sinMedallas
+      ? `<td><span style="display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:bold; color:${esBajo ? "#fff" : "#5c4300"}; background:${esBajo ? "#B30000" : "#F5C518"};">${esBajo ? "Bajo" : "Adecuado"}</span></td>`
+      : "";
     filas += `
-      <tr>
+      <tr style="${fondoFila}">
         <td style="font-size:18px; text-align:center;">${posicion}</td>
         <td>${p.nombre}</td>
         <td>${p.cargo}</td>
         <td>${p.area}</td>
-        <td style="font-weight:bold; color:#B30000;">${p.calificacionIntegral} / 5</td>
+        <td style="font-weight:bold; color:${colorNota};">${p.calificacionIntegral} / 5</td>
+        ${celdaNivel}
       </tr>
     `;
   });
+  const encabezadoNivel = sinMedallas ? "<th>Nivel</th>" : "";
 
   document.getElementById(contenedorId).innerHTML = `
     <table class="tabla-dashboard">
@@ -524,6 +533,7 @@ function pintarTablaRanking(contenedorId, lista, mensajeVacio, sinMedallas) {
           <th>Cargo</th>
           <th>Área</th>
           <th>Calificación Integral</th>
+          ${encabezadoNivel}
         </tr>
       </thead>
       <tbody>
@@ -541,9 +551,12 @@ function pintarRankingSegunModo() {
   if (!datosRanking) return;
   const esMejora = modoRanking === "mejora";
   const sufijo = esMejora ? "Mejora" : "";
-  pintarTablaRanking("rankingJefesContainer", datosRanking["rankingJefes" + sufijo], "Aún no hay Jefes con evaluación completa.", esMejora);
-  pintarTablaRanking("rankingGeneralContainer", datosRanking["rankingGeneral" + sufijo], "Aún no hay evaluaciones completas para generar este ranking.", esMejora);
-  pintarTablaRanking("rankingSucursalesContainer", datosRanking["rankingSucursales" + sufijo], "Aún no hay evaluaciones completas en Sucursales.", esMejora);
+  const vacioJefes = esMejora ? "✅ Ningún Jefe está por debajo de Alto Desempeño (menos de 4.0 sobre 5)." : "Aún no hay Jefes con evaluación completa.";
+  const vacioGeneral = esMejora ? "✅ Nadie en este grupo está por debajo de Alto Desempeño (menos de 4.0 sobre 5)." : "Aún no hay evaluaciones completas para generar este ranking.";
+  const vacioSucursales = esMejora ? "✅ Nadie en Sucursales está por debajo de Alto Desempeño (menos de 4.0 sobre 5)." : "Aún no hay evaluaciones completas en Sucursales.";
+  pintarTablaRanking("rankingJefesContainer", datosRanking["rankingJefes" + sufijo], vacioJefes, esMejora);
+  pintarTablaRanking("rankingGeneralContainer", datosRanking["rankingGeneral" + sufijo], vacioGeneral, esMejora);
+  pintarTablaRanking("rankingSucursalesContainer", datosRanking["rankingSucursales" + sufijo], vacioSucursales, esMejora);
 }
 
 function mostrarModoRanking(modo) {
@@ -551,7 +564,7 @@ function mostrarModoRanking(modo) {
   document.getElementById("modoRanking_mejores").classList.toggle("activo", modo === "mejores");
   document.getElementById("modoRanking_mejora").classList.toggle("activo", modo === "mejora");
   document.getElementById("tituloRanking").textContent =
-    modo === "mejora" ? "📉 Oportunidades de Mejora (menores resultados)" : "🏆 Ranking de Evaluaciones";
+    modo === "mejora" ? "📉 Oportunidades de Mejora (menos de 4.0 sobre 5)" : "🏆 Ranking de Evaluaciones";
   pintarRankingSegunModo();
 }
 
