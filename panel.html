@@ -72,6 +72,9 @@
     .tab-ranking.activo { border-color: #B30000; background: #FFF5F5; }
     .tab-ranking .titulo-tab { font-weight: bold; color: #222; font-size: 14px; }
     .tab-ranking .subtitulo-tab { color: #888; font-size: 12px; }
+    .modo-ranking { display: flex; gap: 10px; justify-content: center; margin-bottom: 18px; flex-wrap: wrap; }
+    .boton-modo { background: #fff; border: 2px solid #eee; border-radius: 999px; padding: 9px 20px; cursor: pointer; font-weight: bold; color: #555; font-size: 14px; width: auto; margin: 0; }
+    .boton-modo.activo { border-color: #B30000; background: #B30000; color: #fff; }
     .ranking-panel { display: none; }
     .ranking-panel.activo { display: block; }
 
@@ -229,10 +232,15 @@
 
       <!-- ============ SECCIÓN 3: Ranking ============ -->
       <div id="seccionRanking" class="seccion-panel">
-        <h3 style="text-align:center; color:#B30000; margin-bottom:5px;">🏆 Ranking de Evaluaciones</h3>
-        <p style="text-align:center; color:#666; font-size:13px; margin-bottom:20px;">
+        <h3 id="tituloRanking" style="text-align:center; color:#B30000; margin-bottom:5px;">🏆 Ranking de Evaluaciones</h3>
+        <p style="text-align:center; color:#666; font-size:13px; margin-bottom:15px;">
           Ponderación: Competencias 30% + Funciones 50% + Valoración Integral 20%
         </p>
+
+        <div class="modo-ranking">
+          <button type="button" class="boton-modo activo" id="modoRanking_mejores" onclick="mostrarModoRanking('mejores')">🏆 Mejores resultados</button>
+          <button type="button" class="boton-modo" id="modoRanking_mejora" onclick="mostrarModoRanking('mejora')">📉 Oportunidades de Mejora</button>
+        </div>
 
         <div class="tabs-ranking">
           <div class="tab-ranking activo" id="tabRanking_jefes" onclick="mostrarRankingTab('jefes')">
